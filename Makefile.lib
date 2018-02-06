@@ -2,7 +2,7 @@
 # (c) 1998--2009 Martin Mares <mj@ucw.cz>
 
 OPT=-O2
-CFLAGS=$(OPT) -Wall -W -Wno-parentheses -Wstrict-prototypes -Wmissing-prototypes
+CFLAGS=$(OPT) -Wall -W -Wno-parentheses -Wstrict-prototypes -Wmissing-prototypes -g
 
 VERSION=3.1.4
 DATE=2009-08-14
@@ -20,7 +20,7 @@ ZLIB=no
 DNS=
 
 # Build libpci as a shared library (yes/no; or local for testing; requires GCC)
-SHARED=yes
+SHARED=local
 
 # ABI version suffix in the name of the shared library
 ABI_VERSION=.3
@@ -54,7 +54,7 @@ PCIINC_INS=lib/config.h lib/header.h lib/pci.h lib/types.h
 export
 
 #all: lib/$(PCILIB) lspci setpci mylspci example lspci.8 setpci.8 pcilib.7 update-pciids update-pciids.8 $(PCI_IDS)
-all: lib/$(PCILIB) 
+all: lib/$(PCILIB) example
 
 lib/$(PCILIB): $(PCIINC) force
 	$(MAKE) -C lib all
@@ -84,8 +84,8 @@ update-pciids: update-pciids.sh
 	chmod +x $@
 
 # The example of use of libpci
-example: app/example.o lib/$(PCILIB)
-example.o: app/example.c $(PCIINC)
+example: example.o lib/$(PCILIB)
+example.o: example.c $(PCIINC)
 
 # The example of use of libpci
 mylspci: mylspci.o lib/$(PCILIB)
