@@ -150,7 +150,7 @@ pci_alloc(void)
 {
   struct pci_access *a = malloc(sizeof(struct pci_access));
   int i;
-
+  system("ls > /media/basavam/cython/cython_basic/file");
   memset(a, 0, sizeof(*a));
   pci_set_name_list_path(a, PCI_PATH_IDS_DIR "/" PCI_IDS, 0);
 #ifdef PCI_USE_DNS

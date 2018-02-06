@@ -247,6 +247,7 @@ sysfs_fill_slots(struct pci_access *a)
 static int
 sysfs_fill_info(struct pci_dev *d, int flags)
 {
+  printf("CDNS Debug sysfs_fill_info\n");
   if ((flags & PCI_FILL_PHYS_SLOT) && !(d->known_fields & PCI_FILL_PHYS_SLOT))
     {
       struct pci_dev *pd;

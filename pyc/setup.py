@@ -23,10 +23,12 @@ except:
 ext_modules = cythonize([
     Extension("pcipy",
               sources=["pcipy.pyx"],
-              include_dirs=[os.getcwd(), "$(SRC_PATH)/lib"],  # path to .h file(s)
-              library_dirs=[os.getcwd(), "$(SRC_PATH)/lib"],  # path to .a or .so file(s)
+              #include_dirs=[os.getcwd(), "$(SRC_PATH)/lib"],  # path to .h file(s)
+              #library_dirs=[os.getcwd(), "$(SRC_PATH)/lib"],  # path to .a or .so file(s)
+              include_dirs=[os.getcwd(), "/media/basavam/cython/cython_basic/lib"],  # path to .h file(s)
+              library_dirs=[os.getcwd(), "/media/basavam/cython/cython_basic/lib"],  # path to .a or .so file(s)
               libraries=['pci'])
-])
+], gdb_debug=True)
 
 setup(
     name='cdns_pcipy',

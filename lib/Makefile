@@ -49,7 +49,7 @@ $(PCILIB): $(addsuffix .o,$(OBJS))
 	$(AR) rcs $@ $^
 	$(RANLIB) $@
 else
-CFLAGS += -fPIC -fvisibility=hidden
+CFLAGS += -fPIC -fvisibility=hidden -g
 $(PCILIB): $(addsuffix .o,$(OBJS))
 	$(CC) -shared $(LDFLAGS) $(SONAME) -Wl,--version-script=libpci.ver -o $@ $^ $(LIB_LDLIBS)
 endif

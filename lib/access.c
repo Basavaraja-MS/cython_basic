@@ -15,6 +15,7 @@
 void
 pci_scan_bus(struct pci_access *a)
 {
+  printf("Invoked pci_scan_bus\n");
   a->methods->scan(a);
 }
 
@@ -153,6 +154,8 @@ pci_write_block(struct pci_dev *d, int pos, byte *buf, int len)
 int
 pci_fill_info_v31(struct pci_dev *d, int flags)
 {
+  printf("CDNS Debug Called Fill info\n");
+  system("echo \"CDNSDebug1\" > DONTDELET");
   if (flags & PCI_FILL_RESCAN)
     {
       flags &= ~PCI_FILL_RESCAN;
