@@ -2,12 +2,15 @@
 
 SRC_PATH := $(PWD)
 
-all: local
+all: local test
 
 local:
 	@echo "Compiling Cython module"
 	make -f Makefile.lib
 	cd pyc && python setup.py build_ext --inplace && cd -
+
+test:
+	cd pyc && python -c "import pcipy" && cd -
 
 
 clean:
