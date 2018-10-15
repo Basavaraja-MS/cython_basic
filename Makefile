@@ -10,7 +10,8 @@ local:
 	cd pyc && python setup.py build_ext --inplace && cd -
 
 test:
-	cd pyc && python -c "import pcipy" && cd -
+	#cd pyc && python -c "import pcipy" && cd -
+	cd pyc && python common.py
 
 
 clean:
