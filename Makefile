@@ -11,12 +11,12 @@ local:
 
 test:
 	#cd pyc && python -c "import pcipy" && cd -
-	cd pyc && python3 common.py
+	cd pyc && python3 pcie_gui.py
 
 
 clean:
 	@echo "Cleaning files"
 	make -f Makefile.lib clean 
-	rm -f pyc/*.so  pyc/*.a pyc/*.o 
+	rm -f pyc/*.so  pyc/*.a pyc/*.o pyc/*.pyc
 	rm -f pyc/pcipy.c
 	rm -rf build/

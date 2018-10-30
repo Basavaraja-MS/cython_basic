@@ -39,7 +39,7 @@ class Ui_PCIeApplicationStressTest(object):
         self.pushButton_EPok.setGeometry(QtCore.QRect(430, 60, 56, 17))
         self.pushButton_EPok.setObjectName("pushButton_EPok")
 
-        def bdf_ep_ok():
+        def bdf_ep_ok(self):
             self.segep = self.lineEdit_segEP.text()
             self.busep = self.lineEdit_busEP.text()
             self.devep = self.lineEdit_devEP.text()
@@ -276,6 +276,30 @@ class Ui_PCIeApplicationStressTest(object):
             PCIeApplicationStressTest)
         self.pushButton_RunAll.setGeometry(QtCore.QRect(290, 100, 56, 17))
         self.pushButton_RunAll.setObjectName("pushButton_RunAll")
+        def run_all_tests():
+            if False in {self.lnkdwntest_run, self.pmtest_run,
+                                self.aspmtest_run, self.lnkrettest_run, self.linkequtest_run}:
+                self.checkBox_PM.setCheckState()
+                self.checkBox_LinkEqua.setCheckState()
+                self.checkBox_aspm.setCheckState()
+                self.checkBox_LnkRetrain.setCheckState()
+                self.checkBox_LnkDwn.setCheckState()
+
+                self.lnkdwntest_run = True
+                self.pmtest_run = True
+                self.aspmtest_run = True
+                self.lnkrettest_run = True
+                self.linkequtest_run = True
+
+                self.pmtest = True
+                self.pmtest_count = self.spinBox_pm.
+                self.label_pm.setText("Run")
+                self.pmtest_run = True
+                print("PM test count", self.pmtest_count)
+                test()
+            else:
+                print("Dont Run PM test")
+        self.pushButton_RunAll.clicked.connect(run_all_tests)
         self.pushButton_StopAll = QtWidgets.QPushButton(
             PCIeApplicationStressTest)
         self.pushButton_StopAll.setGeometry(QtCore.QRect(360, 100, 56, 17))
@@ -455,8 +479,8 @@ class Ui_PCIeApplicationStressTest(object):
             "PCIeApplicationStressTest", "Idle"))
         self.label_11.setText(_translate("PCIeApplicationStressTest", "Dev"))
         self.label_12.setText(_translate("PCIeApplicationStressTest", "Bus"))
-        self.label_13.setText(_translate("PCIeApplicationStressTest", "Seg"))
-        self.label_14.setText(_translate("PCIeApplicationStressTest", "Seg"))
+        self.label_13.setText(_translate("PCIeApplicationStressTest", "EP-Seg"))
+        self.label_14.setText(_translate("PCIeApplicationStressTest", "RP-Seg"))
         self.pushButton_RPok.setText(
             _translate("PCIeApplicationStressTest", "OK"))
         self.label_15.setText(_translate("PCIeApplicationStressTest", "Dev"))
@@ -514,6 +538,7 @@ if __name__ == "__main__":
     ui = Ui_PCIeApplicationStressTest()
     ui.setupUi(PCIeApplicationStressTest)
     PCIeApplicationStressTest.show()
+    print(ui.setupUi.bdf_rp_ok.segrp)
     #print("VALUE:", ui.lnkdwntest)
     #test()
 """
