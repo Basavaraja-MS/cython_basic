@@ -63,7 +63,6 @@ cdef extern from "../lib/pci.h":
 
     cdef void pci_scan_bus(pci_access *acc)
     cdef pci_dev *pci_get_dev(pci_access *acc, int domain, int bus, int dev, int func)
-
     cdef void pci_free_dev(pci_dev *)
 
 

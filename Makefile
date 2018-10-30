@@ -7,11 +7,11 @@ all: local test
 local:
 	@echo "Compiling Cython module"
 	make -f Makefile.lib
-	cd pyc && python setup.py build_ext --inplace && cd -
+	cd pyc && python3 setup.py build_ext --inplace && cd -
 
 test:
 	#cd pyc && python -c "import pcipy" && cd -
-	cd pyc && python common.py
+	cd pyc && python3 common.py
 
 
 clean:
