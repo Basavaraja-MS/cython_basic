@@ -38,8 +38,7 @@ class Ui_PCIeApplicationStressTest(object):
         self.pushButton_EPok = QtWidgets.QPushButton(PCIeApplicationStressTest)
         self.pushButton_EPok.setGeometry(QtCore.QRect(430, 60, 56, 17))
         self.pushButton_EPok.setObjectName("pushButton_EPok")
-
-        def bdf_ep_ok(self):
+        def bdf_ep_ok():
             self.segep = self.lineEdit_segEP.text()
             self.busep = self.lineEdit_busEP.text()
             self.devep = self.lineEdit_devEP.text()
@@ -61,18 +60,6 @@ class Ui_PCIeApplicationStressTest(object):
         self.checkBox_LnkRetrain.setStyleSheet(
             "background-color: rgb(255, 255, 255);")
         self.checkBox_LnkRetrain.setObjectName("checkBox_LnkRetrain")
-        """
-        def lnk_ret_test():
-            if self.checkBox_LnkRetrain.isChecked() == True and self.lnkrettest_run == False:
-                self.lnkrettest = True
-                self.lnkrettest_count = self.spinBox_LinkRet.value()
-                self.label_LnkRet.setText("Run")
-                self.lnkdrettest_run = True
-                print("Run Link retrain test count", self.lnkrettest_count)
-            else:
-                print("Dont Run Link retrain test")
-        self.pushButton_LnkRet.clicked.connect(lnk_ret_test)
-        """
         self.checkBox_LinkEqua = QtWidgets.QCheckBox(PCIeApplicationStressTest)
         self.checkBox_LinkEqua.setGeometry(QtCore.QRect(40, 220, 91, 20))
         self.checkBox_LinkEqua.setStyleSheet(
@@ -141,7 +128,6 @@ class Ui_PCIeApplicationStressTest(object):
             PCIeApplicationStressTest)
         self.pushButton_LnkDwn.setGeometry(QtCore.QRect(220, 160, 56, 17))
         self.pushButton_LnkDwn.setObjectName("pushButton_LnkDwn")
-
         def lnk_dwn_test():
             if self.checkBox_LnkDwn.isChecked() == True and self.lnkdwntest_run == False:
                 self.lnkdwntest = True
@@ -157,7 +143,6 @@ class Ui_PCIeApplicationStressTest(object):
             PCIeApplicationStressTest)
         self.pushButton_LnkRet.setGeometry(QtCore.QRect(220, 190, 56, 17))
         self.pushButton_LnkRet.setObjectName("pushButton_LnkRet")
-
         def lnk_ret_test():
             if self.checkBox_LnkRetrain.isChecked() == True and self.lnkrettest_run == False:
                 self.lnkrettest = True
@@ -173,7 +158,6 @@ class Ui_PCIeApplicationStressTest(object):
             PCIeApplicationStressTest)
         self.pushButton_LnkEq.setGeometry(QtCore.QRect(220, 220, 56, 17))
         self.pushButton_LnkEq.setObjectName("pushButton_LnkEq")
-
         def lnk_equ_test():
             if self.checkBox_LinkEqua.isChecked() == True and self.linkequtest_run == False:
                 self.lnkequtest = True
@@ -188,7 +172,6 @@ class Ui_PCIeApplicationStressTest(object):
         self.pushButton_PM = QtWidgets.QPushButton(PCIeApplicationStressTest)
         self.pushButton_PM.setGeometry(QtCore.QRect(220, 250, 56, 17))
         self.pushButton_PM.setObjectName("pushButton_PM")
-
         def pm_test():
             if self.checkBox_PM.isChecked() == True and self.pmtest_run == False:
                 self.pmtest = True
@@ -200,7 +183,6 @@ class Ui_PCIeApplicationStressTest(object):
             else:
                 print("Dont Run PM test")
         self.pushButton_PM.clicked.connect(pm_test)
-
         self.pushButton_aspm = QtWidgets.QPushButton(PCIeApplicationStressTest)
         self.pushButton_aspm.setGeometry(QtCore.QRect(220, 280, 56, 17))
         self.pushButton_aspm.setObjectName("pushButton_aspm")
@@ -208,7 +190,6 @@ class Ui_PCIeApplicationStressTest(object):
             PCIeApplicationStressTest)
         self.pushButton_aspmstp.setGeometry(QtCore.QRect(280, 280, 56, 17))
         self.pushButton_aspmstp.setObjectName("pushButton_aspmstp")
-
         def aspm_test_stp():
             if self.checkBox_aspm.isChecked() == True and self.aspmtest_run == True:
                 self.label_aspm.setText("Idle")
@@ -221,7 +202,6 @@ class Ui_PCIeApplicationStressTest(object):
             PCIeApplicationStressTest)
         self.pushButton_LnkStop.setGeometry(QtCore.QRect(280, 220, 56, 17))
         self.pushButton_LnkStop.setObjectName("pushButton_LnkStop")
-
         def lnk_equ_test_stp():
             if self.checkBox_LinkEqua.isChecked() == True and self.linkequtest_run == True:
                 self.label_LnkEqu.setText("Idle")
@@ -234,7 +214,6 @@ class Ui_PCIeApplicationStressTest(object):
             PCIeApplicationStressTest)
         self.pushButton_LnkRetStop.setGeometry(QtCore.QRect(280, 190, 56, 17))
         self.pushButton_LnkRetStop.setObjectName("pushButton_LnkRetStop")
-
         def lnkret_test_stp():
             if self.checkBox_LnkRetrain.isChecked() == True and self.lnkrettest_run == True:
                 self.label_LnkRet.setText("Idle")
@@ -248,7 +227,6 @@ class Ui_PCIeApplicationStressTest(object):
         self.pushButton_LnkDwn_stop2.setGeometry(
             QtCore.QRect(280, 160, 56, 17))
         self.pushButton_LnkDwn_stop2.setObjectName("pushButton_LnkDwn_stop2")
-
         def lnk_dwn_test_stp():
             if self.checkBox_LnkDwn.isChecked() == True and self.lnkdwntest_run == True:
                 self.label_LnkDwn.setText("Idle")
@@ -261,7 +239,6 @@ class Ui_PCIeApplicationStressTest(object):
             PCIeApplicationStressTest)
         self.pushButton_PMStp.setGeometry(QtCore.QRect(280, 250, 56, 17))
         self.pushButton_PMStp.setObjectName("pushButton_PMStp")
-
         def pm_test_stp():
             if self.checkBox_PM.isChecked() == True and self.pmtest_run == True:
                 self.label_pm.setText("Idle")
@@ -279,11 +256,18 @@ class Ui_PCIeApplicationStressTest(object):
         def run_all_tests():
             if False in {self.lnkdwntest_run, self.pmtest_run,
                                 self.aspmtest_run, self.lnkrettest_run, self.linkequtest_run}:
-                self.checkBox_PM.setCheckState()
-                self.checkBox_LinkEqua.setCheckState()
-                self.checkBox_aspm.setCheckState()
-                self.checkBox_LnkRetrain.setCheckState()
-                self.checkBox_LnkDwn.setCheckState()
+                self.checkBox_PM.setChecked(True)
+                self.checkBox_LinkEqua.setChecked(True)
+                self.checkBox_aspm.setChecked(True)
+                self.checkBox_LnkRetrain.setChecked(True)
+                self.checkBox_LnkDwn.setChecked(True)
+
+                icon = QtGui.QtIcon()
+                self.checkBox_PM.setIcon(icon)
+                #self.checkBox_LinkEqua.setIcon(QIcon(""))
+                #self.checkBox_aspm.setIcon(QIcon(""))
+                #self.checkBox_LnkRetrain.setIcon(QIcon(""))
+                #self.checkBox_LnkDwn.setIcon(QIcon(""))
 
                 self.lnkdwntest_run = True
                 self.pmtest_run = True
@@ -292,10 +276,12 @@ class Ui_PCIeApplicationStressTest(object):
                 self.linkequtest_run = True
 
                 self.pmtest = True
-                self.pmtest_count = self.spinBox_pm.
-                self.label_pm.setText("Run")
-                self.pmtest_run = True
-                print("PM test count", self.pmtest_count)
+                self.pmtest_count = self.spinBox_pm.value()
+                self.lnkrettest_count = self.spinBox_LnkRet.value()
+                self.lnkequtest_count = self.spinBox_LnkEqu.value()
+                self.aspmtest_count = self.spinBox_aspm.value()
+                self.lnkdwntest_count = self.spinBox_LinkDwn.value()
+                print("All tests are run ")
                 test()
             else:
                 print("Dont Run PM test")
@@ -332,7 +318,6 @@ class Ui_PCIeApplicationStressTest(object):
         self.label_aspm.setGeometry(QtCore.QRect(360, 280, 35, 10))
         self.label_aspm.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.label_aspm.setObjectName("label_aspm")
-
         def aspm_test():
             if self.checkBox_aspm.isChecked() == True and self.aspmtest_run == False:
                 self.aspmtest = True
@@ -344,7 +329,6 @@ class Ui_PCIeApplicationStressTest(object):
             else:
                 print("Dont Run Link down test")
         self.pushButton_aspm.clicked.connect(aspm_test)
-
         self.lineEdit_devEP = QtWidgets.QLineEdit(PCIeApplicationStressTest)
         self.lineEdit_devEP.setGeometry(QtCore.QRect(262, 60, 51, 20))
         self.lineEdit_devEP.setStyleSheet(
@@ -384,7 +368,6 @@ class Ui_PCIeApplicationStressTest(object):
         self.pushButton_RPok = QtWidgets.QPushButton(PCIeApplicationStressTest)
         self.pushButton_RPok.setGeometry(QtCore.QRect(430, 20, 56, 17))
         self.pushButton_RPok.setObjectName("pushButton_RPok")
-
         def bdf_rp_ok():
             self.segrp = self.lineEdit_segRP.text()
             self.busrp = self.lineEdit_busRP.text()
@@ -419,7 +402,6 @@ class Ui_PCIeApplicationStressTest(object):
         self.label_17 = QtWidgets.QLabel(PCIeApplicationStressTest)
         self.label_17.setGeometry(QtCore.QRect(120, 20, 31, 16))
         self.label_17.setObjectName("label_17")
-
         self.retranslateUi(PCIeApplicationStressTest)
         QtCore.QMetaObject.connectSlotsByName(PCIeApplicationStressTest)
 
@@ -530,6 +512,8 @@ def test():
     ptest.main_test_fun(test_param)
 
 
+def baby(ui):
+    print(ui.segrp)
 
 if __name__ == "__main__":
     import sys
@@ -538,7 +522,9 @@ if __name__ == "__main__":
     ui = Ui_PCIeApplicationStressTest()
     ui.setupUi(PCIeApplicationStressTest)
     PCIeApplicationStressTest.show()
-    print(ui.setupUi.bdf_rp_ok.segrp)
+    #print ("SegRP", ui.setupUi.segep)
+    #baby(ui)
+    #print(ui.aspmtest)
     #print("VALUE:", ui.lnkdwntest)
     #test()
 """
