@@ -7,6 +7,9 @@
 # WARNING! All changes made in this file will be lost!
 from PyQt5 import QtCore, QtGui, QtWidgets
 import common as ptest
+from pcie_log import *
+import threading
+import time
 
 
 class Ui_PCIeApplicationStressTest(object):
@@ -15,6 +18,47 @@ class Ui_PCIeApplicationStressTest(object):
     aspmtest_run = False
     lnkrettest_run = False
     linkequtest_run = False
+
+    def __init__(self):
+        self.test_param = {
+            "link_disable_test": False,
+            "link_disable_test_count": 10,
+            "link_down_stat": False,
+
+            "link_ret_test": False,
+            "link_ret_test_count": 10,
+            "link_ret_stat": False,
+
+            "link_equ_test": False,
+            "link_equ_test_count": 10,
+            "link_equ_stat": False,
+
+            "aspm_test": False,
+            "aspm_test_count": 10,
+            "aspm_test_stat": False,
+
+            "pcipm_test": False,
+            "pcipm_test_count": 10,
+            "pcipm_test_stat": False,
+
+            "id": True,
+            "aer_chk": False,
+            "dll_active_chk": True,
+            "d1": False,
+            "d2": False,
+            "print_only": False,
+            "max_aspm": 1,
+
+            "segrp": 0,
+            "busrp": 0,
+            "devrp": 1,
+            "funrp":  0,
+
+            "segep": 0,
+            "busep": 1,
+            "devep": 0,
+            "funep": 0,
+        }
 
     def setupUi(self, PCIeApplicationStressTest):
         PCIeApplicationStressTest.setObjectName("PCIeApplicationStressTest")
@@ -30,7 +74,7 @@ class Ui_PCIeApplicationStressTest(object):
         self.lineEdit_funcEP.setGeometry(QtCore.QRect(362, 60, 51, 20))
         self.lineEdit_funcEP.setStyleSheet(
             "background-color: rgb(255, 255, 255);")
-        self.lineEdit_funcEP.setText("")
+        self.lineEdit_funcEP.setText("0")
         self.lineEdit_funcEP.setObjectName("lineEdit_funcEP")
         self.label_2 = QtWidgets.QLabel(PCIeApplicationStressTest)
         self.label_2.setGeometry(QtCore.QRect(320, 60, 31, 16))
@@ -39,11 +83,11 @@ class Ui_PCIeApplicationStressTest(object):
         self.pushButton_EPok.setGeometry(QtCore.QRect(430, 60, 56, 17))
         self.pushButton_EPok.setObjectName("pushButton_EPok")
         def bdf_ep_ok():
-            self.segep = self.lineEdit_segEP.text()
-            self.busep = self.lineEdit_busEP.text()
-            self.devep = self.lineEdit_devEP.text()
-            self.funcep = self.lineEdit_funcEP.text()
-            print(self.segep, self.busep, self.devep, self.funcep)
+            self.test_param["segep"] = self.lineEdit_segEP.text()
+            self.test_param["busep"] = self.lineEdit_busEP.text()
+            self.test_param["devep"] = self.lineEdit_devEP.text()
+            self.test_param["funcep"] = self.lineEdit_funcEP.text()
+            #print(self.test_param["segep"], self.test_param["busep"], self.test_param["devep"], self.test_param["funcep"])
         self.pushButton_EPok.clicked.connect(bdf_ep_ok)
         self.listView = QtWidgets.QListView(PCIeApplicationStressTest)
         self.listView.setGeometry(QtCore.QRect(20, 121, 421, 191))
@@ -130,59 +174,63 @@ class Ui_PCIeApplicationStressTest(object):
         self.pushButton_LnkDwn.setObjectName("pushButton_LnkDwn")
         def lnk_dwn_test():
             if self.checkBox_LnkDwn.isChecked() == True and self.lnkdwntest_run == False:
-                self.lnkdwntest = True
-                self.lnkdwntest_count = self.spinBox_LinkDwn.value()
+                self.test_param["link_disable_test"] = True
+                self.test_param["lnkdwntest_count"] = self.spinBox_LinkDwn.value()
                 self.label_LnkDwn.setText("Run")
                 self.lnkdwntest_run = True
-                print("Run Link down test count", self.lnkdwntest_count)
-                test()
+                logging.info("Run Link down test count %d", self.test_param["lnkdwntest_count"])
+                test(self.test_param)
+                prbar(self, self.test_param)
             else:
-                print("Dont Run Link down test")
+                logging.info("Dont Run Link down test")
         self.pushButton_LnkDwn.clicked.connect(lnk_dwn_test)
         self.pushButton_LnkRet = QtWidgets.QPushButton(
             PCIeApplicationStressTest)
         self.pushButton_LnkRet.setGeometry(QtCore.QRect(220, 190, 56, 17))
         self.pushButton_LnkRet.setObjectName("pushButton_LnkRet")
-        def lnk_ret_test():
+        def link_ret_test():
             if self.checkBox_LnkRetrain.isChecked() == True and self.lnkrettest_run == False:
-                self.lnkrettest = True
-                self.lnkrettest_count = self.spinBox_LnkRet.value()
+                self.test_param["link_ret_test"] = True
+                self.test_param["link_ret_test_count"] = self.spinBox_LnkRet.value()
                 self.label_LnkRet.setText("Run")
                 self.lnkrettest_run = True
-                print("Run Link retrain test count", self.lnkrettest_count)
-                test()
+                self.label_LnkRet.repaint() #For displaying Run
+                logging.info("Run Link retrain test count %d", self.test_param["link_ret_test_count"])
+                #test(self.test_param)
+                prbar(self, self.test_param)
+                link_ret_test_stp()
             else:
-                print("Dont Run Link retrain test")
-        self.pushButton_LnkRet.clicked.connect(lnk_ret_test)
+                logging.info("Dont Run Link retrain test")
+        self.pushButton_LnkRet.clicked.connect(link_ret_test)
         self.pushButton_LnkEq = QtWidgets.QPushButton(
             PCIeApplicationStressTest)
         self.pushButton_LnkEq.setGeometry(QtCore.QRect(220, 220, 56, 17))
         self.pushButton_LnkEq.setObjectName("pushButton_LnkEq")
-        def lnk_equ_test():
+        def link_equ_test():
             if self.checkBox_LinkEqua.isChecked() == True and self.linkequtest_run == False:
-                self.lnkequtest = True
-                self.lnkequtest_count = self.spinBox_LnkEqu.value()
+                self.test_param["link_equ_test"] = True
+                self.test_param["link_equ_test_count"] = self.spinBox_LnkEqu.value()
                 self.label_LnkEqu.setText("Run")
                 self.linkequtest_run = True
-                print("Run Link Equalization count", self.lnkequtest_count)
-                test()
+                logging.info("Run Link Equalization count %d", self.test_param["link_equ_test_count"])
+                test(self.test_param)
             else:
-                print("Dont Run Link Equalization test")
-        self.pushButton_LnkEq.clicked.connect(lnk_equ_test)
+                logging.info("Dont Run Link Equalization test")
+        self.pushButton_LnkEq.clicked.connect(link_equ_test)
         self.pushButton_PM = QtWidgets.QPushButton(PCIeApplicationStressTest)
         self.pushButton_PM.setGeometry(QtCore.QRect(220, 250, 56, 17))
         self.pushButton_PM.setObjectName("pushButton_PM")
-        def pm_test():
+        def pcipm_test():
             if self.checkBox_PM.isChecked() == True and self.pmtest_run == False:
-                self.pmtest = True
-                self.pmtest_count = self.spinBox_pm.value()
+                self.test_param["pcipm_test"] = True
+                self.test_param["pcipm_test_count"] = self.spinBox_pm.value()
                 self.label_pm.setText("Run")
                 self.pmtest_run = True
-                print("PM test count", self.pmtest_count)
-                test()
+                logging.info("PM test count %d", self.test_param["pcipm_test_count"])
+                test(self.test_param)
             else:
-                print("Dont Run PM test")
-        self.pushButton_PM.clicked.connect(pm_test)
+                logging.info("Dont Run PM test")
+        self.pushButton_PM.clicked.connect(pcipm_test)
         self.pushButton_aspm = QtWidgets.QPushButton(PCIeApplicationStressTest)
         self.pushButton_aspm.setGeometry(QtCore.QRect(220, 280, 56, 17))
         self.pushButton_aspm.setObjectName("pushButton_aspm")
@@ -194,47 +242,52 @@ class Ui_PCIeApplicationStressTest(object):
             if self.checkBox_aspm.isChecked() == True and self.aspmtest_run == True:
                 self.label_aspm.setText("Idle")
                 self.aspmtest_run = False
-                print("stop aspm test count")
+                self.test_param["aspm_test"] = False
+                logging.info("stop aspm test count")
             else:
-                print("Dont stop aspm test")
+                logging.info("Dont stop aspm test")
         self.pushButton_aspmstp.clicked.connect(aspm_test_stp)
         self.pushButton_LnkStop = QtWidgets.QPushButton(
             PCIeApplicationStressTest)
         self.pushButton_LnkStop.setGeometry(QtCore.QRect(280, 220, 56, 17))
         self.pushButton_LnkStop.setObjectName("pushButton_LnkStop")
-        def lnk_equ_test_stp():
+        def link_equ_test_stp():
             if self.checkBox_LinkEqua.isChecked() == True and self.linkequtest_run == True:
                 self.label_LnkEqu.setText("Idle")
                 self.linkequtest_run = False
-                print("stop Link Equ test")
+                self.test_param["link_equ_test"] = False
+                logging.info("stop Link Equ test")
             else:
-                print("Dont stop Link Equ test")
-        self.pushButton_LnkStop.clicked.connect(lnk_equ_test_stp)
+                logging.info("Dont stop Link Equ test")
+        self.pushButton_LnkStop.clicked.connect(link_equ_test_stp)
         self.pushButton_LnkRetStop = QtWidgets.QPushButton(
             PCIeApplicationStressTest)
         self.pushButton_LnkRetStop.setGeometry(QtCore.QRect(280, 190, 56, 17))
         self.pushButton_LnkRetStop.setObjectName("pushButton_LnkRetStop")
-        def lnkret_test_stp():
+        def link_ret_test_stp():
             if self.checkBox_LnkRetrain.isChecked() == True and self.lnkrettest_run == True:
                 self.label_LnkRet.setText("Idle")
                 self.lnkrettest_run = False
-                print("stop lnk retrain test count")
+                self.test_param["link_ret_test"] = False
+                logging.info("stop lnk retrain test count")
             else:
-                print("Dont stop lnk retrain test")
-        self.pushButton_LnkRetStop.clicked.connect(lnkret_test_stp)
+                logging.info("Dont stop lnk retrain test")
+        self.pushButton_LnkRetStop.clicked.connect(link_ret_test_stp)
         self.pushButton_LnkDwn_stop2 = QtWidgets.QPushButton(
             PCIeApplicationStressTest)
         self.pushButton_LnkDwn_stop2.setGeometry(
             QtCore.QRect(280, 160, 56, 17))
         self.pushButton_LnkDwn_stop2.setObjectName("pushButton_LnkDwn_stop2")
-        def lnk_dwn_test_stp():
+        def link_disable_test_stp():
             if self.checkBox_LnkDwn.isChecked() == True and self.lnkdwntest_run == True:
                 self.label_LnkDwn.setText("Idle")
                 self.lnkdwntest_run = False
-                print("Stop Link down")
+                self.test_param["link_down_stat"] = False
+                self.test_param["link_disable_test"] = False
+                logging.info("Stop Link down")
             else:
-                print("Dont stop test")
-        self.pushButton_LnkDwn_stop2.clicked.connect(lnk_dwn_test_stp)
+                logging.info("Dont stop test")
+        self.pushButton_LnkDwn_stop2.clicked.connect(link_disable_test_stp)
         self.pushButton_PMStp = QtWidgets.QPushButton(
             PCIeApplicationStressTest)
         self.pushButton_PMStp.setGeometry(QtCore.QRect(280, 250, 56, 17))
@@ -243,9 +296,10 @@ class Ui_PCIeApplicationStressTest(object):
             if self.checkBox_PM.isChecked() == True and self.pmtest_run == True:
                 self.label_pm.setText("Idle")
                 self.pmtest_run = False
-                print("Stop pm test")
+                self.test_param["pcipm_test"] = False
+                logging.info("Stop pm test")
             else:
-                print("Dont stop test")
+                logging.info("Dont stop test")
         self.pushButton_PMStp.clicked.connect(pm_test_stp)
         #self.pushButton_PMStp = QtWidgets.QPushButton(PCIeApplicationStressTest)
         #self.pushButton_PMStp.setGeometry(QtCore.QRect(280, 250, 56, 17))
@@ -262,29 +316,27 @@ class Ui_PCIeApplicationStressTest(object):
                 self.checkBox_LnkRetrain.setChecked(True)
                 self.checkBox_LnkDwn.setChecked(True)
 
-                icon = QtGui.QtIcon()
-                self.checkBox_PM.setIcon(icon)
-                #self.checkBox_LinkEqua.setIcon(QIcon(""))
-                #self.checkBox_aspm.setIcon(QIcon(""))
-                #self.checkBox_LnkRetrain.setIcon(QIcon(""))
-                #self.checkBox_LnkDwn.setIcon(QIcon(""))
-
                 self.lnkdwntest_run = True
                 self.pmtest_run = True
                 self.aspmtest_run = True
                 self.lnkrettest_run = True
                 self.linkequtest_run = True
 
-                self.pmtest = True
-                self.pmtest_count = self.spinBox_pm.value()
-                self.lnkrettest_count = self.spinBox_LnkRet.value()
-                self.lnkequtest_count = self.spinBox_LnkEqu.value()
-                self.aspmtest_count = self.spinBox_aspm.value()
-                self.lnkdwntest_count = self.spinBox_LinkDwn.value()
-                print("All tests are run ")
-                test()
+                self.test_param["link_disable_test"] = True
+                self.test_param["link_ret_test"] = True
+                self.test_param["link_equ_test"] = True
+                self.test_param["aspm_test"] = True
+                self.test_param["pcipm_test"] = True
+
+                self.test_param["pcipm_test_count"] = self.spinBox_pm.value()
+                self.test_param["link_ret_test_count"] = self.spinBox_LnkRet.value()
+                self.test_param["link_equ_test_count"] = self.spinBox_LnkEqu.value()
+                self.test_param["aspm_test_count"] = self.spinBox_aspm.value()
+                self.test_param["link_disable_test_count"] = self.spinBox_LinkDwn.value()
+                logging.info("All tests are run ")
+                test(self.test_param)
             else:
-                print("Dont Run PM test")
+                logging.info("Dont Run PM test")
         self.pushButton_RunAll.clicked.connect(run_all_tests)
         self.pushButton_StopAll = QtWidgets.QPushButton(
             PCIeApplicationStressTest)
@@ -320,20 +372,20 @@ class Ui_PCIeApplicationStressTest(object):
         self.label_aspm.setObjectName("label_aspm")
         def aspm_test():
             if self.checkBox_aspm.isChecked() == True and self.aspmtest_run == False:
-                self.aspmtest = True
-                self.aspmtest_count = self.spinBox_aspm.value()
+                self.test_param["aspm_test"] = True
+                self.test_param["aspm_test_count"] = self.spinBox_aspm.value()
                 self.label_aspm.setText("Run")
                 self.aspmtest_run = True
-                print("Run aspm test count", self.aspmtest_count)
-                test()
+                logging.info("Run aspm test count %d", self.test_param["aspm_test_count"])
+                test(self.test_param)
             else:
-                print("Dont Run Link down test")
+                logging.info("Dont Run Link down test")
         self.pushButton_aspm.clicked.connect(aspm_test)
         self.lineEdit_devEP = QtWidgets.QLineEdit(PCIeApplicationStressTest)
         self.lineEdit_devEP.setGeometry(QtCore.QRect(262, 60, 51, 20))
         self.lineEdit_devEP.setStyleSheet(
             "background-color: rgb(255, 255, 255);")
-        self.lineEdit_devEP.setText("")
+        self.lineEdit_devEP.setText("0")
         self.lineEdit_devEP.setObjectName("lineEdit_devEP")
         self.label_11 = QtWidgets.QLabel(PCIeApplicationStressTest)
         self.label_11.setGeometry(QtCore.QRect(220, 60, 31, 16))
@@ -342,7 +394,7 @@ class Ui_PCIeApplicationStressTest(object):
         self.lineEdit_busEP.setGeometry(QtCore.QRect(162, 60, 51, 20))
         self.lineEdit_busEP.setStyleSheet(
             "background-color: rgb(255, 255, 255);")
-        self.lineEdit_busEP.setText("")
+        self.lineEdit_busEP.setText("1")
         self.lineEdit_busEP.setObjectName("lineEdit_busEP")
         self.label_12 = QtWidgets.QLabel(PCIeApplicationStressTest)
         self.label_12.setGeometry(QtCore.QRect(120, 60, 31, 16))
@@ -363,23 +415,23 @@ class Ui_PCIeApplicationStressTest(object):
         self.lineEdit_busRP.setGeometry(QtCore.QRect(162, 20, 51, 20))
         self.lineEdit_busRP.setStyleSheet(
             "background-color: rgb(255, 255, 255);")
-        self.lineEdit_busRP.setText("")
+        self.lineEdit_busRP.setText("0")
         self.lineEdit_busRP.setObjectName("lineEdit_busRP")
         self.pushButton_RPok = QtWidgets.QPushButton(PCIeApplicationStressTest)
         self.pushButton_RPok.setGeometry(QtCore.QRect(430, 20, 56, 17))
         self.pushButton_RPok.setObjectName("pushButton_RPok")
         def bdf_rp_ok():
-            self.segrp = self.lineEdit_segRP.text()
-            self.busrp = self.lineEdit_busRP.text()
-            self.devrp = self.lineEdit_devRP.text()
-            self.funrp = self.lineEdit_funcRP.text()
-            print(self.segrp, self.busrp, self.devrp, self.funrp)
+            self.test_param["segrp"] = self.lineEdit_segRP.text()
+            self.test_param["busrp"] = self.lineEdit_busRP.text()
+            self.test_param["devrp"] = self.lineEdit_devRP.text()
+            self.test_param["funrp"] = self.lineEdit_funcRP.text()
+            #logging.info(self.test_param["segrp"], self.test_param["busrp"], self.test_param["devrp"], self.test_param["funrp"])
         self.pushButton_RPok.clicked.connect(bdf_rp_ok)
         self.lineEdit_funcRP = QtWidgets.QLineEdit(PCIeApplicationStressTest)
         self.lineEdit_funcRP.setGeometry(QtCore.QRect(362, 20, 51, 20))
         self.lineEdit_funcRP.setStyleSheet(
             "background-color: rgb(255, 255, 255);")
-        self.lineEdit_funcRP.setText("")
+        self.lineEdit_funcRP.setText("0")
         self.lineEdit_funcRP.setObjectName("lineEdit_funcRP")
         self.label_15 = QtWidgets.QLabel(PCIeApplicationStressTest)
         self.label_15.setGeometry(QtCore.QRect(220, 20, 31, 16))
@@ -397,7 +449,7 @@ class Ui_PCIeApplicationStressTest(object):
         self.lineEdit_devRP.setGeometry(QtCore.QRect(262, 20, 51, 20))
         self.lineEdit_devRP.setStyleSheet(
             "background-color: rgb(255, 255, 255);")
-        self.lineEdit_devRP.setText("")
+        self.lineEdit_devRP.setText("1")
         self.lineEdit_devRP.setObjectName("lineEdit_devRP")
         self.label_17 = QtWidgets.QLabel(PCIeApplicationStressTest)
         self.label_17.setGeometry(QtCore.QRect(120, 20, 31, 16))
@@ -469,51 +521,36 @@ class Ui_PCIeApplicationStressTest(object):
         self.label_16.setText(_translate("PCIeApplicationStressTest", "Func "))
         self.label_17.setText(_translate("PCIeApplicationStressTest", "Bus"))
 
-def test():
-    test_param = {
-        "link_down_test": True,
-        "link_down_test_count": 10,
-        "link_down_stat": ui.lnkdwntest_run,
 
-        "link_ret_test": True,
-        "link_ret_test_count": 10,
-        "link_ret_stat": ui.lnkrettest_run,
 
-        "link_equ_test": True,
-        "link_equ_test_count": 10,
-        "link_equ_stat": ui.linkequtest_run,
+def comedy(self, dictval):
+    print("Comedy %d", 10)
+    val = 10
+    while(1):
+        val = val + 10
+        self.progressBar.setValue(val)
+        time.sleep(1)
+        if val == 100:
+            break
+    
 
-        "aspm_test": True,
-        "aspm_test_count": 10,
-        "aspm_test_stat": ui.aspmtest_run,
 
-        "pcipm_test": True,
-        "pcipm_test_count": 10,
-        "pcipm_test_stat": ui.pmtest_run,
+def progress_bar(self, dictval):
+    if dictval["link_disable_test"] is True:
+        val = maxval = dictval["link_disable_test_count"]
+        while val != 0:
+            val = dictval["link_disable_test_count"] * (100/maxval)
+            self.progressBar.setValue(val)
 
-        "id": True,
-        "aer_chk": False,
-        "dll_active_chk": True,
-        "d1": False,
-        "d2": False,
-        "print_only": False,
-        "max_aspm": 1,
-        "segep": 0,
-        "busep": 0,
-        "devep": 1,
-        "funep":  0,
 
-        "segrp": 0,
-        "busrp": 1,
-        "devrp": 0,
-        "funrp": 0,
 
-    }
+
+def test(test_param):
     ptest.main_test_fun(test_param)
-
-
-def baby(ui):
-    print(ui.segrp)
+    t1 = threading.Thread(target=progress_bar, args=(self,value,))
+    t1.start()
+    t1.join()
+    
 
 if __name__ == "__main__":
     import sys
@@ -521,58 +558,9 @@ if __name__ == "__main__":
     PCIeApplicationStressTest = QtWidgets.QDialog()
     ui = Ui_PCIeApplicationStressTest()
     ui.setupUi(PCIeApplicationStressTest)
+    #ui.prbar(100)
+    dlg = MyDialog()
+    dlg.show()
+    dlg.raise_()
     PCIeApplicationStressTest.show()
-    #print ("SegRP", ui.setupUi.segep)
-    #baby(ui)
-    #print(ui.aspmtest)
-    #print("VALUE:", ui.lnkdwntest)
-    #test()
-"""
-    test_param = {
-        "link_down_test": True,
-        "link_down_test_count": 10,
-        "link_down_stat": ui.lnkdwntest_run,
-
-        "link_ret_test": True,
-        "link_ret_test_count": 10,
-        "link_ret_stat": ui.lnkrettest_run,
-
-        "link_equ_test": True,
-        "link_equ_test_count": 10,
-        "link_equ_stat": ui.linkequtest_run,
-
-        "aspm_test": True,
-        "aspm_test_count": 10,
-        "aspm_test_stat": ui.aspmtest_run,
-
-        "pcipm_test": True,
-        "pcipm_test_count": 10,
-        "pcipm_test_stat": ui.pmtest_run,
-
-        "id": True,
-        "aer": False,
-        "d1": False,
-        "d2": False,
-    }
-    ptest.main_test_fun(test_param)
-"""
-"""
-    test_param = {
-        "link_down_test": ui.lnkdwntest,
-        "link_down_test_count": ui.lnkdwntest_count,
-        "link_down_stat": ui.lnkdwntest_run,
-
-        "link_ret_test": ui.lnkrettest,
-        "link_ret_test_count": ui.lnkrettest_count,
-        "link_ret_stat": ui.lnkrettest_run,
-
-        "link_equ_test": ui.lnkequtest,
-        "link_equ_test_count": ui.lnkequtest_count,
-        "link_equ_stat": ui.linkequtest_run,
-        "id": True,
-        "aer": False,
-        "d1": False,
-        "d2": False,
-    }
-"""
 sys.exit(app.exec_())
