@@ -1,6 +1,7 @@
 /*
  *	The PCI Library -- Configuration Access via /proc/bus/pci
  *
+ *	Copyright (c) 1997--2003 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */

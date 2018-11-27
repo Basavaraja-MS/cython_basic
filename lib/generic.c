@@ -1,6 +1,7 @@
 /*
  *	The PCI Library -- Generic Direct Access Functions
  *
+ *	Copyright (c) 1997--2000 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */

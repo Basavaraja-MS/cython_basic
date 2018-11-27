@@ -1,6 +1,7 @@
 /*
  *	The PCI Library -- PCI Header Structure (based on <linux/pci.h>)
  *
+ *	Copyright (c) 1997--2010 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */
@@ -134,6 +135,7 @@
 #define  PCI_BRIDGE_CTL_SERR	0x02	/* The same for SERR forwarding */
 #define  PCI_BRIDGE_CTL_NO_ISA	0x04	/* Disable bridging of ISA ports */
 #define  PCI_BRIDGE_CTL_VGA	0x08	/* Forward VGA addresses */
+#define  PCI_BRIDGE_CTL_VGA_16BIT 0x10	/* VGA 16-bit decode */
 #define  PCI_BRIDGE_CTL_MASTER_ABORT 0x20  /* Report master aborts */
 #define  PCI_BRIDGE_CTL_BUS_RESET 0x40	/* Secondary bus reset */
 #define  PCI_BRIDGE_CTL_FAST_BACK 0x80	/* Fast Back2Back enabled on secondary interface */
@@ -143,7 +145,8 @@
 #define  PCI_BRIDGE_CTL_DISCARD_TIMER_SERR_EN 0x800	/* PCI-X? */
 
 /* Header type 2 (CardBus bridges) */
-/* 0x14-0x15 reserved */
+#define PCI_CB_CAPABILITY_LIST	0x14
+/* 0x15 reserved */
 #define PCI_CB_SEC_STATUS	0x16	/* Secondary status */
 #define PCI_CB_PRIMARY_BUS	0x18	/* PCI bus number */
 #define PCI_CB_CARD_BUS		0x19	/* CardBus bus number */
@@ -182,6 +185,7 @@
 /* Capability lists */
 
 #define PCI_CAP_LIST_ID		0	/* Capability ID */
+#define  PCI_CAP_ID_NULL	0x00	/* Null Capability */
 #define  PCI_CAP_ID_PM		0x01	/* Power Management */
 #define  PCI_CAP_ID_AGP		0x02	/* Accelerated Graphics Port */
 #define  PCI_CAP_ID_VPD		0x03	/* Vital Product Data */
@@ -201,12 +205,14 @@
 #define  PCI_CAP_ID_MSIX	0x11	/* MSI-X */
 #define  PCI_CAP_ID_SATA	0x12	/* Serial-ATA HBA */
 #define  PCI_CAP_ID_AF		0x13	/* Advanced features of PCI devices integrated in PCIe root cplx */
+#define  PCI_CAP_ID_EA		0x14	/* Enhanced Allocation */
 #define PCI_CAP_LIST_NEXT	1	/* Next capability in the list */
 #define PCI_CAP_FLAGS		2	/* Capability defined flags (16 bits) */
 #define PCI_CAP_SIZEOF		4
 
 /* Capabilities residing in the PCI Express extended configuration space */
 
+#define PCI_EXT_CAP_ID_NULL	0x00	/* Null Capability */
 #define PCI_EXT_CAP_ID_AER	0x01	/* Advanced Error Reporting */
 #define PCI_EXT_CAP_ID_VC	0x02	/* Virtual Channel */
 #define PCI_EXT_CAP_ID_DSN	0x03	/* Device Serial Number */
@@ -215,12 +221,39 @@
 #define PCI_EXT_CAP_ID_RCILINK	0x06	/* Root Complex Internal Link Declaration */
 #define PCI_EXT_CAP_ID_RCECOLL	0x07	/* Root Complex Event Collector */
 #define PCI_EXT_CAP_ID_MFVC	0x08	/* Multi-Function Virtual Channel */
-#define PCI_EXT_CAP_ID_RBCB	0x0a	/* Root Bridge Control Block */
+#define PCI_EXT_CAP_ID_VC2	0x09	/* Virtual Channel (2nd ID) */
+#define PCI_EXT_CAP_ID_RCRB	0x0a	/* Root Complex Register Block */
 #define PCI_EXT_CAP_ID_VNDR	0x0b	/* Vendor specific */
 #define PCI_EXT_CAP_ID_ACS	0x0d	/* Access Controls */
 #define PCI_EXT_CAP_ID_ARI	0x0e	/* Alternative Routing-ID Interpretation */
 #define PCI_EXT_CAP_ID_ATS	0x0f	/* Address Translation Service */
 #define PCI_EXT_CAP_ID_SRIOV	0x10	/* Single Root I/O Virtualization */
+#define PCI_EXT_CAP_ID_MRIOV	0x11	/* Multi-Root I/O Virtualization */
+#define PCI_EXT_CAP_ID_MCAST	0x12	/* Multicast */
+#define PCI_EXT_CAP_ID_PRI	0x13	/* Page Request Interface */
+#define PCI_EXT_CAP_ID_REBAR	0x15	/* Resizable BAR */
+#define PCI_EXT_CAP_ID_DPA	0x16	/* Dynamic Power Allocation */
+#define PCI_EXT_CAP_ID_TPH	0x17	/* Transaction processing hints */
+#define PCI_EXT_CAP_ID_LTR	0x18	/* Latency Tolerance Reporting */
+#define PCI_EXT_CAP_ID_SECPCI	0x19	/* Secondary PCI Express */
+#define PCI_EXT_CAP_ID_PMUX	0x1a	/* Protocol Multiplexing */
+#define PCI_EXT_CAP_ID_PASID	0x1b	/* Process Address Space ID */
+#define PCI_EXT_CAP_ID_LNR	0x1c	/* LN Requester */
+#define PCI_EXT_CAP_ID_DPC	0x1d	/* Downstream Port Containment */
+#define PCI_EXT_CAP_ID_L1PM	0x1e	/* L1 PM Substates */
+#define PCI_EXT_CAP_ID_PTM	0x1f	/* Precision Time Measurement */
+#define PCI_EXT_CAP_ID_M_PCIE	0x20	/* PCIe over M-PHY */
+#define PCI_EXT_CAP_ID_FRS	0x21	/* FRS Queuing */
+#define PCI_EXT_CAP_ID_RTR	0x22	/* Readiness Time Reporting */
+#define PCI_EXT_CAP_ID_DVSEC	0x23	/* Designated Vendor-Specific */
+#define PCI_EXT_CAP_ID_VF_REBAR	0x24	/* VF Resizable BAR */
+#define PCI_EXT_CAP_ID_DLNK	0x25	/* Data Link Feature */
+#define PCI_EXT_CAP_ID_16GT	0x26	/* Physical Layer 16.0 GT/s */
+#define PCI_EXT_CAP_ID_LMR	0x27	/* Lane Margining at Receiver */
+#define PCI_EXT_CAP_ID_HIER_ID	0x28	/* Hierarchy ID */
+#define PCI_EXT_CAP_ID_NPEM	0x29	/* Native PCIe Enclosure Management */
+
+/*** Definitions of capabilities ***/
 
 /* Power Management Registers */
 
@@ -708,6 +741,9 @@
 #define PCI_HT_RM_CNT1		10	/* Retry Count 1 Register */
 #define PCI_HT_RM_SIZEOF	12
 
+/* Vendor-Specific Capability (see PCI_EVNDR_xxx for the PCIe version) */
+#define PCI_VNDR_LENGTH		2	/* Length byte */
+
 /* PCI Express */
 #define PCI_EXP_FLAGS		0x2	/* Capabilities register */
 #define PCI_EXP_FLAGS_VERS	0x000f	/* Capability version */
@@ -717,8 +753,8 @@
 #define  PCI_EXP_TYPE_ROOT_PORT 0x4	/* Root Port */
 #define  PCI_EXP_TYPE_UPSTREAM	0x5	/* Upstream Port */
 #define  PCI_EXP_TYPE_DOWNSTREAM 0x6	/* Downstream Port */
-#define  PCI_EXP_TYPE_PCI_BRIDGE 0x7	/* PCI/PCI-X Bridge */
-#define  PCI_EXP_TYPE_PCIE_BRIDGE 0x8	/* PCI/PCI-X to PCIE Bridge */
+#define  PCI_EXP_TYPE_PCI_BRIDGE 0x7	/* PCIe to PCI/PCI-X Bridge */
+#define  PCI_EXP_TYPE_PCIE_BRIDGE 0x8	/* PCI/PCI-X to PCIe Bridge */
 #define  PCI_EXP_TYPE_ROOT_INT_EP 0x9	/* Root Complex Integrated Endpoint */
 #define  PCI_EXP_TYPE_ROOT_EC 0xa	/* Root Complex Event Collector */
 #define PCI_EXP_FLAGS_SLOT	0x0100	/* Slot implemented */
@@ -761,12 +797,13 @@
 #define  PCI_EXP_LNKCAP_SPEED	0x0000f	/* Maximum Link Speed */
 #define  PCI_EXP_LNKCAP_WIDTH	0x003f0	/* Maximum Link Width */
 #define  PCI_EXP_LNKCAP_ASPM	0x00c00	/* Active State Power Management */
-#define  PCI_EXP_LNKCAP_L0S	0x07000	/* L0s Acceptable Latency */
-#define  PCI_EXP_LNKCAP_L1	0x38000	/* L1 Acceptable Latency */
+#define  PCI_EXP_LNKCAP_L0S	0x07000	/* L0s Exit Latency */
+#define  PCI_EXP_LNKCAP_L1	0x38000	/* L1 Exit Latency */
 #define  PCI_EXP_LNKCAP_CLOCKPM	0x40000	/* Clock Power Management */
 #define  PCI_EXP_LNKCAP_SURPRISE 0x80000 /* Surprise Down Error Reporting */
 #define  PCI_EXP_LNKCAP_DLLA	0x100000 /* Data Link Layer Active Reporting */
 #define  PCI_EXP_LNKCAP_LBNC	0x200000 /* Link Bandwidth Notification Capability */
+#define  PCI_EXP_LNKCAP_AOC 	0x400000 /* ASPM Optionality Compliance */
 #define  PCI_EXP_LNKCAP_PORT	0xff000000 /* Port Number */
 #define PCI_EXP_LNKCTL		0x10	/* Link Control */
 #define  PCI_EXP_LNKCTL_ASPM	0x0003	/* ASPM Control */
@@ -830,17 +867,27 @@
 #define  PCI_EXP_RTCTL_PMEIE	0x0008	/* PME Interrupt Enable */
 #define  PCI_EXP_RTCTL_CRSVIS	0x0010	/* Configuration Request Retry Status Visible to SW */
 #define PCI_EXP_RTCAP		0x1e	/* Root Capabilities */
-#define  PCI_EXP_RTCAP_CRSVIS	0x0010	/* Configuration Request Retry Status Visible to SW */
+#define  PCI_EXP_RTCAP_CRSVIS	0x0001	/* Configuration Request Retry Status Visible to SW */
 #define PCI_EXP_RTSTA		0x20	/* Root Status */
 #define  PCI_EXP_RTSTA_PME_REQID   0x0000ffff /* PME Requester ID */
 #define  PCI_EXP_RTSTA_PME_STATUS  0x00010000 /* PME Status */
 #define  PCI_EXP_RTSTA_PME_PENDING 0x00020000 /* PME is Pending */
 #define PCI_EXP_DEVCAP2			0x24	/* Device capabilities 2 */
+#define  PCI_EXP_DEVCAP2_LTR		0x0800	/* LTR supported */
+#define  PCI_EXP_DEVCAP2_OBFF(x)	(((x) >> 18) & 3) /* OBFF supported */
 #define PCI_EXP_DEVCTL2			0x28	/* Device Control */
 #define  PCI_EXP_DEV2_TIMEOUT_RANGE(x)	((x) & 0xf) /* Completion Timeout Ranges Supported */
 #define  PCI_EXP_DEV2_TIMEOUT_VALUE(x)	((x) & 0xf) /* Completion Timeout Value */
 #define  PCI_EXP_DEV2_TIMEOUT_DIS	0x0010	/* Completion Timeout Disable Supported */
+#define  PCI_EXP_DEV2_ATOMICOP_REQUESTER_EN	0x0040	/* AtomicOp RequesterEnable */
+#define  PCI_EXP_DEV2_ATOMICOP_EGRESS_BLOCK	0x0080	/* AtomicOp Egress Blocking */
 #define  PCI_EXP_DEV2_ARI		0x0020	/* ARI Forwarding */
+#define  PCI_EXP_DEVCAP2_ATOMICOP_ROUTING	0x0040	/* AtomicOp Routing Supported */
+#define  PCI_EXP_DEVCAP2_32BIT_ATOMICOP_COMP	0x0080	/* 32bit AtomicOp Completer Supported */
+#define  PCI_EXP_DEVCAP2_64BIT_ATOMICOP_COMP	0x0100	/* 64bit AtomicOp Completer Supported */
+#define  PCI_EXP_DEVCAP2_128BIT_CAS_COMP	0x0200	/* 128bit CAS Completer Supported */
+#define  PCI_EXP_DEV2_LTR		0x0400	/* LTR enabled */
+#define  PCI_EXP_DEV2_OBFF(x)		(((x) >> 13) & 3) /* OBFF enabled */
 #define PCI_EXP_DEVSTA2			0x2a	/* Device Status */
 #define PCI_EXP_LNKCAP2			0x2c	/* Link Capabilities */
 #define PCI_EXP_LNKCTL2			0x30	/* Link Control */
@@ -851,9 +898,14 @@
 #define  PCI_EXP_LNKCTL2_MARGIN(x)	(((x) >> 7) & 7) /* Transmit Margin */
 #define  PCI_EXP_LNKCTL2_MOD_CMPLNC	0x0400	/* Enter Modified Compliance */
 #define  PCI_EXP_LNKCTL2_CMPLNC_SOS	0x0800	/* Compliance SOS */
-#define  PCI_EXP_LNKCTL2_COM_DEEMPHASIS(x) (((x) >> 12) & 1) /* Compliance De-emphasis */
+#define  PCI_EXP_LNKCTL2_COM_DEEMPHASIS(x) (((x) >> 12) & 0xf) /* Compliance De-emphasis */
 #define PCI_EXP_LNKSTA2			0x32	/* Link Status */
 #define  PCI_EXP_LINKSTA2_DEEMPHASIS(x)	((x) & 1)	/* Current De-emphasis Level */
+#define  PCI_EXP_LINKSTA2_EQU_COMP	0x02	/* Equalization Complete */
+#define  PCI_EXP_LINKSTA2_EQU_PHASE1	0x04	/* Equalization Phase 1 Successful */
+#define  PCI_EXP_LINKSTA2_EQU_PHASE2	0x08	/* Equalization Phase 2 Successful */
+#define  PCI_EXP_LINKSTA2_EQU_PHASE3	0x10	/* Equalization Phase 3 Successful */
+#define  PCI_EXP_LINKSTA2_EQU_REQ	0x20	/* Link Equalization Request */
 #define PCI_EXP_SLTCAP2			0x34	/* Slot Capabilities */
 #define PCI_EXP_SLTCTL2			0x38	/* Slot Control */
 #define PCI_EXP_SLTSTA2			0x3a	/* Slot Status */
@@ -878,6 +930,19 @@
 #define  PCI_AF_CTRL_FLR	0x01
 #define PCI_AF_STATUS		5
 #define  PCI_AF_STATUS_TP	0x01
+
+/* SATA Host Bus Adapter */
+#define PCI_SATA_HBA_BARS	4
+#define PCI_SATA_HBA_REG0	8
+
+/* Enhanced Allocation (EA) */
+#define PCI_EA_CAP_TYPE1_SECONDARY	4
+#define PCI_EA_CAP_TYPE1_SUBORDINATE	5
+/* EA Entry header */
+#define PCI_EA_CAP_ENT_WRITABLE	0x40000000	/* Writable: 1 = RW, 0 = HwInit */
+#define PCI_EA_CAP_ENT_ENABLE	0x80000000	/* Enable for this entry */
+
+/*** Definitions of extended capabilities ***/
 
 /* Advanced Error Reporting */
 #define PCI_ERR_UNCOR_STATUS	4	/* Uncorrectable Error Status */
@@ -913,9 +978,24 @@
 #define  PCI_ERR_CAP_ECRC_GENE	0x00000040	/* ECRC Generation Enable */
 #define  PCI_ERR_CAP_ECRC_CHKC	0x00000080	/* ECRC Check Capable */
 #define  PCI_ERR_CAP_ECRC_CHKE	0x00000100	/* ECRC Check Enable */
+#define  PCI_ERR_CAP_MULT_HDRC	0x00000200	/* Multiple Header Capable */
+#define  PCI_ERR_CAP_MULT_HDRE	0x00000400	/* Multiple Header Enable */
+#define  PCI_ERR_CAP_TLP_PFX	0x00000800	/* TLP Prefix Log Present */
+#define  PCI_ERR_CAP_HDR_LOG	0x00001000	/* Completion Timeout Prefix/Header Log Capable */
 #define PCI_ERR_HEADER_LOG	28	/* Header Log Register (16 bytes) */
 #define PCI_ERR_ROOT_COMMAND	44	/* Root Error Command */
-#define PCI_ERR_ROOT_STATUS	48
+#define  PCI_ERR_ROOT_CMD_COR_EN	0x00000001 /* Correctable Error Reporting Enable */
+#define  PCI_ERR_ROOT_CMD_NONFATAL_EN	0x00000002 /* Non-Fatal Error Reporting Enable*/
+#define  PCI_ERR_ROOT_CMD_FATAL_EN	0x00000004 /* Fatal Error Reporting Enable */
+#define PCI_ERR_ROOT_STATUS	48	/* Root Error Status */
+#define  PCI_ERR_ROOT_COR_RCV		0x00000001 /* ERR_COR Received */
+#define  PCI_ERR_ROOT_MULTI_COR_RCV	0x00000002 /* Multiple ERR_COR Received */
+#define  PCI_ERR_ROOT_UNCOR_RCV		0x00000004 /* ERR_FATAL/NONFATAL Received */
+#define  PCI_ERR_ROOT_MULTI_UNCOR_RCV	0x00000008 /* Multiple ERR_FATAL/NONFATAL Received */
+#define  PCI_ERR_ROOT_FIRST_FATAL	0x00000010 /* First Uncorrectable Fatal */
+#define  PCI_ERR_ROOT_NONFATAL_RCV	0x00000020 /* Non-Fatal Error Messages Received */
+#define  PCI_ERR_ROOT_FATAL_RCV		0x00000040 /* Fatal Error Messages Received */
+#define  PCI_ERR_MSG_NUM(x)	(((x) >> 27) & 0x1f) /* MSI/MSI-X vector */
 #define PCI_ERR_ROOT_COR_SRC	52
 #define PCI_ERR_ROOT_SRC	54
 
@@ -939,6 +1019,17 @@
 #define  PCI_PWR_DATA_RAIL(x)	(((x) >> 18) & 7)   /* Power Rail */
 #define PCI_PWR_CAP		12	/* Capability */
 #define  PCI_PWR_CAP_BUDGET(x)	((x) & 1)	/* Included in system budget */
+
+/* Root Complex Link */
+#define PCI_RCLINK_ESD		4	/* Element Self Description */
+#define PCI_RCLINK_LINK1	16	/* First Link Entry */
+#define  PCI_RCLINK_LINK_DESC	0	/* Link Entry: Description */
+#define  PCI_RCLINK_LINK_ADDR	8	/* Link Entry: Address (64-bit) */
+#define  PCI_RCLINK_LINK_SIZE	16	/* Link Entry: sizeof */
+
+/* PCIe Vendor-Specific Capability */
+#define PCI_EVNDR_HEADER	4	/* Vendor-Specific Header */
+#define PCI_EVNDR_REGISTERS	8	/* Vendor-Specific Registers */
 
 /* Access Control Services */
 #define PCI_ACS_CAP		0x04	/* ACS Capability Register */
@@ -1003,6 +1094,101 @@
 #define PCI_IOV_MSAO		0x3c	/* VF Migration State Array Offset */
 #define PCI_IOV_MSA_BIR(x)	((x) & 7) /* VF Migration State BIR */
 #define PCI_IOV_MSA_OFFSET(x)	((x) & 0xfffffff8) /* VF Migration State Offset */
+
+/* Multicast */
+#define PCI_MCAST_CAP		0x04	/* Multicast Capability */
+#define  PCI_MCAST_CAP_MAX_GROUP(x) ((x) & 0x3f)
+#define  PCI_MCAST_CAP_WIN_SIZE(x) (((x) >> 8) & 0x3f)
+#define  PCI_MCAST_CAP_ECRC	0x8000	/* ECRC Regeneration Supported */
+#define PCI_MCAST_CTRL		0x06	/* Multicast Control */
+#define  PCI_MCAST_CTRL_NUM_GROUP(x) ((x) & 0x3f)
+#define  PCI_MCAST_CTRL_ENABLE	0x8000	/* MC Enabled */
+#define PCI_MCAST_BAR		0x08	/* Base Address */
+#define  PCI_MCAST_BAR_INDEX_POS(x)	((u32) ((x) & 0x3f))
+#define  PCI_MCAST_BAR_MASK	(~0xfffUL)
+#define PCI_MCAST_RCV		0x10	/* Receive */
+#define PCI_MCAST_BLOCK		0x18	/* Block All */
+#define PCI_MCAST_BLOCK_UNTRANS	0x20	/* Block Untranslated */
+#define PCI_MCAST_OVL_BAR	0x28	/* Overlay BAR */
+#define  PCI_MCAST_OVL_SIZE(x)	((u32) ((x) & 0x3f))
+#define  PCI_MCAST_OVL_MASK	(~0x3fUL)
+
+/* Page Request Interface */
+#define PCI_PRI_CTRL		0x04	/* PRI Control Register */
+#define  PCI_PRI_CTRL_ENABLE	0x01	/* Enable */
+#define  PCI_PRI_CTRL_RESET	0x02	/* Reset */
+#define PCI_PRI_STATUS		0x06	/* PRI status register */
+#define  PCI_PRI_STATUS_RF	0x001	/* Response Failure */
+#define  PCI_PRI_STATUS_UPRGI	0x002	/* Unexpected PRG index */
+#define  PCI_PRI_STATUS_STOPPED	0x100	/* PRI Stopped */
+#define PCI_PRI_MAX_REQ		0x08	/* PRI max reqs supported */
+#define PCI_PRI_ALLOC_REQ	0x0c	/* PRI max reqs allowed */
+
+/* Transaction Processing Hints */
+#define PCI_TPH_CAPABILITIES	4
+#define   PCI_TPH_INTVEC_SUP	(1<<1)	/* Supports interrupt vector mode */
+#define   PCI_TPH_DEV_SUP      	(1<<2)	/* Device specific mode supported */
+#define   PCI_TPH_EXT_REQ_SUP	(1<<8)	/* Supports extended requests */
+#define   PCI_TPH_ST_LOC_MASK	(3<<9)	/* Steering table location bits */
+#define     PCI_TPH_ST_NONE	(0<<9)	/* No steering table */
+#define     PCI_TPH_ST_CAP	(1<<9)	/* Steering table in TPH cap */
+#define     PCI_TPH_ST_MSIX	(2<<9)	/* Steering table in MSI-X table */
+#define   PCI_TPH_ST_SIZE_SHIFT	(16)	/* Encoded as size - 1 */
+
+/* Latency Tolerance Reporting */
+#define PCI_LTR_MAX_SNOOP	4	/* 16 bit value */
+#define   PCI_LTR_VALUE_MASK	(0x3ff)
+#define   PCI_LTR_SCALE_SHIFT	(10)
+#define   PCI_LTR_SCALE_MASK	(7)
+#define PCI_LTR_MAX_NOSNOOP	6	/* 16 bit value */
+
+/* Process Address Space ID */
+#define PCI_PASID_CAP		0x04	/* PASID feature register */
+#define  PCI_PASID_CAP_EXEC	0x02	/* Exec permissions Supported */
+#define  PCI_PASID_CAP_PRIV	0x04	/* Privilege Mode Supported */
+#define  PCI_PASID_CAP_WIDTH(x) (((x) >> 8) & 0x1f) /* Max PASID Width */
+#define PCI_PASID_CTRL		0x06	/* PASID control register */
+#define  PCI_PASID_CTRL_ENABLE	0x01	/* Enable bit */
+#define  PCI_PASID_CTRL_EXEC	0x02	/* Exec permissions Enable */
+#define  PCI_PASID_CTRL_PRIV	0x04	/* Privilege Mode Enable */
+
+#define PCI_DPC_CAP		4	/* DPC Capability */
+#define  PCI_DPC_CAP_INT_MSG(x) ((x) & 0x1f)	/* DPC Interrupt Message Number */
+#define  PCI_DPC_CAP_RP_EXT	0x20		/* DPC Root Port Extentions */
+#define  PCI_DPC_CAP_TLP_BLOCK	0x40		/* DPC Poisoned TLP Egress Blocking */
+#define  PCI_DPC_CAP_SW_TRIGGER	0x80		/* DPC Software Trigger */
+#define  PCI_DPC_CAP_RP_LOG(x)	(((x) >> 8) & 0xf) /* DPC RP PIO Log Size */
+#define  PCI_DPC_CAP_DL_ACT_ERR	0x1000		/* DPC DL_Active ERR_COR Signal */
+#define PCI_DPC_CTL		6	/* DPC Control */
+#define  PCI_DPC_CTL_TRIGGER(x) ((x) & 0x3)	/* DPC Trigger Enable */
+#define  PCI_DPC_CTL_CMPL	0x4		/* DPC Completion Control */
+#define  PCI_DPC_CTL_INT	0x8		/* DPC Interrupt Enabled */
+#define  PCI_DPC_CTL_ERR_COR	0x10		/* DPC ERR_COR Enabled */
+#define  PCI_DPC_CTL_TLP	0x20		/* DPC Poisoned TLP Egress Blocking Enabled */
+#define  PCI_DPC_CTL_SW_TRIGGER	0x40		/* DPC Software Trigger */
+#define  PCI_DPC_CTL_DL_ACTIVE	0x80		/* DPC DL_Active ERR_COR Enable */
+#define PCI_DPC_STATUS		8	/* DPC STATUS */
+#define  PCI_DPC_STS_TRIGGER	0x01		/* DPC Trigger Status */
+#define  PCI_DPC_STS_REASON(x) (((x) >> 1) & 0x3) /* DPC Trigger Reason */
+#define  PCI_DPC_STS_INT	0x08		/* DPC Interrupt Status */
+#define  PCI_DPC_STS_RP_BUSY	0x10		/* DPC Root Port Busy */
+#define  PCI_DPC_STS_TRIGGER_EXT(x) (((x) >> 5) & 0x3) /* Trigger Reason Extention */
+#define  PCI_DPC_STS_PIO_FEP(x) (((x) >> 8) & 0x1f) /* DPC PIO First Error Pointer */
+#define PCI_DPC_SOURCE		10	/* DPC Source ID */
+
+/* L1 PM Substates Extended Capability */
+#define PCI_L1PM_SUBSTAT_CAP	0x4	/* L1 PM Substate Capability */
+#define  PCI_L1PM_SUBSTAT_CAP_PM_L12	0x1	/* PCI-PM L1.2 Supported */
+#define  PCI_L1PM_SUBSTAT_CAP_PM_L11	0x2	/* PCI-PM L1.1 Supported */
+#define  PCI_L1PM_SUBSTAT_CAP_ASPM_L12	0x4	/* ASPM L1.2 Supported */
+#define  PCI_L1PM_SUBSTAT_CAP_ASPM_L11	0x8	/* ASPM L1.1 Supported */
+#define  PCI_L1PM_SUBSTAT_CAP_L1PM_SUPP	0x16	/* L1 PM Substates supported */
+#define PCI_L1PM_SUBSTAT_CTL1	0x8	/* L1 PM Substate Control 1 */
+#define  PCI_L1PM_SUBSTAT_CTL1_PM_L12	0x1	/* PCI-PM L1.2 Enable */
+#define  PCI_L1PM_SUBSTAT_CTL1_PM_L11	0x2	/* PCI-PM L1.1 Enable */
+#define  PCI_L1PM_SUBSTAT_CTL1_ASPM_L12	0x4	/* ASPM L1.2 Enable */
+#define  PCI_L1PM_SUBSTAT_CTL1_ASPM_L11	0x8	/* ASPM L1.1 Enable */
+#define PCI_L1PM_SUBSTAT_CTL2	0xC	/* L1 PM Substate Control 2 */
 
 /*
  * The PCI interface treats multi-function devices as independent
@@ -1149,3 +1335,7 @@
 
 #define PCI_VENDOR_ID_INTEL		0x8086
 #define PCI_VENDOR_ID_COMPAQ		0x0e11
+
+/* I/O resource flags, compatible with <include/linux/ioport.h> */
+
+#define PCI_IORESOURCE_PCI_EA_BEI	(1<<5)

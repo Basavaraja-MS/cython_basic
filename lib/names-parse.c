@@ -1,6 +1,7 @@
 /*
  *	The PCI Library -- Parsing of the ID list
  *
+ *	Copyright (c) 1997--2008 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */
@@ -29,7 +30,7 @@ static pci_file pci_open(struct pci_access *a)
   if (result)
     return result;
   len = strlen(a->id_file_name);
-  if (len >= 3 && memcmp(a->id_file_name + len - 3, ".gz", 3) != 0)
+  if (len < 3 || memcmp(a->id_file_name + len - 3, ".gz", 3) != 0)
     return result;
   new_name = malloc(len - 2);
   memcpy(new_name, a->id_file_name, len - 3);
@@ -237,6 +238,7 @@ pci_free_name_list(struct pci_access *a)
 {
   pci_id_cache_flush(a);
   pci_id_hash_free(a);
+  pci_id_hwdb_free(a);
   a->id_load_failed = 0;
 }
 

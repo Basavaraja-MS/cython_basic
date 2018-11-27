@@ -1,12 +1,14 @@
 /*
  *	The PCI Library -- Resolving ID's via DNS
  *
+ *	Copyright (c) 2007--2008 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "internal.h"
 #include "names.h"
@@ -74,7 +76,8 @@ static int
 dns_parse_packet(struct dns_state *s, byte *p, unsigned int plen)
 {
   byte *end = p + plen;
-  unsigned int i, j, x, len;
+  unsigned int i, j, len;
+  unsigned int UNUSED x;
 
 #if 0
   /* Dump the packet */

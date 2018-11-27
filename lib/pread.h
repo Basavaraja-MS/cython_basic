@@ -1,6 +1,7 @@
 /*
  *	The PCI Library -- Portable interface to pread() and pwrite()
  *
+ *	Copyright (c) 1997--2003 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */
@@ -28,15 +29,6 @@ static int pread(unsigned int fd, void *buf, size_t size, loff_t where)
 #endif
 static int pwrite(unsigned int fd, void *buf, size_t size, loff_t where)
 { return syscall(SYS_pwrite, fd, buf, size, where); }
-
-#elif defined(i386)
-/* old libc on i386 -> call syscalls directly the old way */
-#include <asm/unistd.h>
-static _syscall5(int, pread, unsigned int, fd, void *, buf, size_t, size, u32, where_lo, u32, where_hi);
-static _syscall5(int, pwrite, unsigned int, fd, void *, buf, size_t, size, u32, where_lo, u32, where_hi);
-static int do_read(struct pci_dev *d UNUSED, int fd, void *buf, size_t size, int where) { return pread(fd, buf, size, where, 0); }
-static int do_write(struct pci_dev *d UNUSED, int fd, void *buf, size_t size, int where) { return pwrite(fd, buf, size, where, 0); }
-#define PCI_HAVE_DO_READ
 
 #else
 /* In all other cases we use lseek/read/write instead to be safe */

@@ -2,6 +2,9 @@
  *	The PCI Library -- NetBSD libpci access
  *         (based on FreeBSD /dev/pci access)
  *
+ *	Copyright (c) 1999 Jari Kirma <kirma@cs.hut.fi>
+ *      Copyright (c) 2002 Quentin Garnier <cube@cubidou.net>
+ *	Copyright (c) 2002 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */
@@ -68,7 +71,7 @@ nbsd_read(struct pci_dev *d, int pos, byte *buf, int len)
   if (!(len == 1 || len == 2 || len == 4))
     return pci_generic_block_read(d, pos, buf, len);
 
-  if (pos >= 256)
+  if (pos >= 4096)
     return 0;
 
   shift = 8*(pos % 4);

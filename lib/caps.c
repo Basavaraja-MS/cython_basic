@@ -1,6 +1,7 @@
 /*
  *	The PCI Library -- Capabilities
  *
+ *	Copyright (c) 2008 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */
@@ -70,7 +71,7 @@ pci_scan_ext_caps(struct pci_dev *d)
       if (been_there[where]++)
 	break;
       pci_add_cap(d, where, id, PCI_CAP_EXTENDED);
-      where = header >> 20;
+      where = (header >> 20) & ~3;
     }
   while (where);
 }
@@ -103,11 +104,40 @@ pci_free_caps(struct pci_dev *d)
 struct pci_cap *
 pci_find_cap(struct pci_dev *d, unsigned int id, unsigned int type)
 {
-  struct pci_cap *c;
+  return pci_find_cap_nr(d, id, type, NULL);
+}
 
-  pci_fill_info_v31(d, ((type == PCI_CAP_NORMAL) ? PCI_FILL_CAPS : PCI_FILL_EXT_CAPS));
+/**
+ * Finds a particular capability of a device
+ *
+ * To select one capability if there are more than one with the same id, you
+ * can provide a pointer to an unsigned int that contains the index which you
+ * want as cap_number. If you don't care and are fine with the first one you
+ * can supply NULL. The cap_number will be replaced by the acutal number
+ * of capablities with that id.
+ */
+struct pci_cap *
+pci_find_cap_nr(struct pci_dev *d, unsigned int id, unsigned int type,
+                unsigned int *cap_number)
+{
+  struct pci_cap *c;
+  struct pci_cap *found = NULL;
+  unsigned int target = (cap_number ? *cap_number : 0);
+  unsigned int index = 0;
+
+  pci_fill_info_v35(d, ((type == PCI_CAP_NORMAL) ? PCI_FILL_CAPS : PCI_FILL_EXT_CAPS));
+
   for (c=d->first_cap; c; c=c->next)
-    if (c->type == type && c->id == id)
-      return c;
-  return NULL;
+    {
+      if (c->type == type && c->id == id)
+	{
+	  if (target == index)
+	    found = c;
+	  index++;
+	}
+    }
+
+  if (cap_number)
+    *cap_number = index;
+  return found;
 }

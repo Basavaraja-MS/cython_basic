@@ -1,6 +1,8 @@
 /*
  *	The PCI Library -- Access to i386 I/O ports on Solaris
  *
+ *	Copyright (c) 2003 Bill Moore <billm@eng.sun.com>
+ *	Copyright (c) 2003--2006 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */
@@ -61,4 +63,12 @@ static inline void
 outl (u32 value, u16 port)
 {
   __asm__ __volatile__ ("outl (%w1)": :"a" (value), "Nd" (port));
+}
+
+static inline void intel_io_lock(void)
+{
+}
+
+static inline void intel_io_unlock(void)
+{
 }

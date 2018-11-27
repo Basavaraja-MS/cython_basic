@@ -47,3 +47,38 @@ LIBPCI_3.1 {
 		pci_find_cap;
 		pci_read_vpd;
 };
+
+LIBPCI_3.2 {
+	global:
+		pci_fill_info;
+};
+
+LIBPCI_3.3 {
+	global:
+		pci_fill_info;
+		pci_filter_init;
+		pci_filter_match;
+		pci_filter_parse_id;
+		pci_filter_parse_slot;
+};
+
+LIBPCI_3.4 {
+	global:
+		pci_fill_info;
+};
+
+LIBPCI_3.5 {
+	global:
+		pci_init;
+		pci_fill_info;
+};
+
+LIBPCI_3.6 {
+	global:
+		pci_get_string_property;
+};
+
+LIBPCI_3.7 {
+	global:
+		pci_find_cap_nr;
+};

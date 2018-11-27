@@ -1,6 +1,7 @@
 /*
  *	The PCI Library -- Initialization and related things
  *
+ *	Copyright (c) 1997--2018 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */
@@ -11,7 +12,6 @@
 #include <string.h>
 
 #include "internal.h"
-#undef PCI_HAVE_PM_INTEL_CONF
 
 static struct pci_methods *pci_methods[PCI_ACCESS_MAX] = {
   NULL,
@@ -57,6 +57,33 @@ static struct pci_methods *pci_methods[PCI_ACCESS_MAX] = {
 #else
   NULL,
 #endif
+#ifdef PCI_HAVE_PM_DARWIN_DEVICE
+  &pm_darwin,
+#else
+  NULL,
+#endif
+#ifdef PCI_HAVE_PM_SYLIXOS_DEVICE
+  &pm_sylixos_device,
+#else
+  NULL,
+#endif
+};
+
+// If PCI_ACCESS_AUTO is selected, we probe the access methods in this order
+static int probe_sequence[] = {
+  // System-specific methods
+  PCI_ACCESS_SYS_BUS_PCI,
+  PCI_ACCESS_PROC_BUS_PCI,
+  PCI_ACCESS_FBSD_DEVICE,
+  PCI_ACCESS_AIX_DEVICE,
+  PCI_ACCESS_NBSD_LIBPCI,
+  PCI_ACCESS_OBSD_DEVICE,
+  PCI_ACCESS_DARWIN,
+  PCI_ACCESS_SYLIXOS_DEVICE,
+  // Low-level methods poking the hardware directly
+  PCI_ACCESS_I386_TYPE1,
+  PCI_ACCESS_I386_TYPE2,
+  -1,
 };
 
 void *
@@ -77,7 +104,7 @@ pci_mfree(void *x)
 }
 
 char *
-pci_strdup(struct pci_access *a, char *s)
+pci_strdup(struct pci_access *a, const char *s)
 {
   int len = strlen(s) + 1;
   char *t = pci_malloc(a, len);
@@ -93,6 +120,7 @@ pci_generic_error(char *msg, ...)
   va_start(args, msg);
   fputs("pcilib: ", stderr);
   vfprintf(stderr, msg, args);
+  va_end(args);
   fputc('\n', stderr);
   exit(1);
 }
@@ -105,6 +133,7 @@ pci_generic_warn(char *msg, ...)
   va_start(args, msg);
   fputs("pcilib: ", stderr);
   vfprintf(stderr, msg, args);
+  va_end(args);
   fputc('\n', stderr);
 }
 
@@ -150,12 +179,16 @@ pci_alloc(void)
 {
   struct pci_access *a = malloc(sizeof(struct pci_access));
   int i;
+
   memset(a, 0, sizeof(*a));
   pci_set_name_list_path(a, PCI_PATH_IDS_DIR "/" PCI_IDS, 0);
 #ifdef PCI_USE_DNS
   pci_define_param(a, "net.domain", PCI_ID_DOMAIN, "DNS domain used for resolving of ID's");
   pci_define_param(a, "net.cache_name", "~/.pciids-cache", "Name of the ID cache file");
   a->id_lookup_mode = PCI_LOOKUP_CACHE;
+#endif
+#ifdef PCI_HAVE_HWDB
+  pci_define_param(a, "hwdb.disable", "0", "Do not look up names in UDEV's HWDB if non-zero");
 #endif
   for (i=0; i<PCI_ACCESS_MAX; i++)
     if (pci_methods[i] && pci_methods[i]->config)
@@ -164,7 +197,7 @@ pci_alloc(void)
 }
 
 void
-pci_init(struct pci_access *a)
+pci_init_v35(struct pci_access *a)
 {
   if (!a->error)
     a->error = pci_generic_error;
@@ -184,25 +217,32 @@ pci_init(struct pci_access *a)
   else
     {
       unsigned int i;
-      for (i=0; i<PCI_ACCESS_MAX; i++)
-	if (pci_methods[i])
-	  {
-	    a->debug("Trying method %d...", i);
-	    if (pci_methods[i]->detect(a))
-	      {
-		a->debug("...OK\n");
-		a->methods = pci_methods[i];
-		a->method = i;
-		break;
-	      }
-	    a->debug("...No.\n");
-	  }
+      for (i=0; probe_sequence[i] >= 0; i++)
+	{
+	  struct pci_methods *m = pci_methods[probe_sequence[i]];
+	  if (!m)
+	    continue;
+	  a->debug("Trying method %s...", m->name);
+	  if (m->detect(a))
+	    {
+	      a->debug("...OK\n");
+	      a->methods = m;
+	      a->method = probe_sequence[i];
+	      break;
+	    }
+	  a->debug("...No.\n");
+	}
       if (!a->methods)
 	a->error("Cannot find any working access method.");
     }
   a->debug("Decided to use %s\n", a->methods->name);
   a->methods->init(a);
 }
+
+STATIC_ALIAS(void pci_init(struct pci_access *a), pci_init_v35(a));
+DEFINE_ALIAS(void pci_init_v30(struct pci_access *a), pci_init_v35);
+SYMBOL_VERSION(pci_init_v30, pci_init@LIBPCI_3.0);
+SYMBOL_VERSION(pci_init_v35, pci_init@@LIBPCI_3.5);
 
 void
 pci_cleanup(struct pci_access *a)

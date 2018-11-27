@@ -1,6 +1,7 @@
 /*
  *	The PCI Library -- AIX /dev/pci[0-n] access
  *
+ *	Copyright (c) 1999 Jari Kirma <kirma@cs.hut.fi>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */

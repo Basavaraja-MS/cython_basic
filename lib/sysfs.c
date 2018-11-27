@@ -1,6 +1,8 @@
 /*
  *	The PCI Library -- Configuration Access via /sys/bus/pci
  *
+ *	Copyright (c) 2003 Matthew Wilcox <matthew@wil.cx>
+ *	Copyright (c) 1997--2008 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */
@@ -83,25 +85,67 @@ sysfs_obj_name(struct pci_dev *d, char *object, char *buf)
     d->access->error("File name too long");
 }
 
+#define OBJBUFSIZE 1024
+
 static int
-sysfs_get_value(struct pci_dev *d, char *object)
+sysfs_get_string(struct pci_dev *d, char *object, char *buf, int mandatory)
 {
   struct pci_access *a = d->access;
   int fd, n;
-  char namebuf[OBJNAMELEN], buf[256];
+  char namebuf[OBJNAMELEN];
+  void (*warn)(char *msg, ...) = (mandatory ? a->error : a->warning);
 
   sysfs_obj_name(d, object, namebuf);
   fd = open(namebuf, O_RDONLY);
   if (fd < 0)
-    a->error("Cannot open %s: %s", namebuf, strerror(errno));
-  n = read(fd, buf, sizeof(buf));
+    {
+      if (mandatory || errno != ENOENT)
+	warn("Cannot open %s: %s", namebuf, strerror(errno));
+      return 0;
+    }
+  n = read(fd, buf, OBJBUFSIZE);
   close(fd);
   if (n < 0)
-    a->error("Error reading %s: %s", namebuf, strerror(errno));
-  if (n >= (int) sizeof(buf))
-    a->error("Value in %s too long", namebuf);
+    {
+      warn("Error reading %s: %s", namebuf, strerror(errno));
+      return 0;
+     }
+  if (n >= OBJBUFSIZE)
+    {
+      warn("Value in %s too long", namebuf);
+      return 0;
+    }
   buf[n] = 0;
-  return strtol(buf, NULL, 0);
+  return 1;
+}
+
+static char *
+sysfs_deref_link(struct pci_dev *d, char *link_name)
+{
+  char path[2*OBJNAMELEN], rel_path[OBJNAMELEN];
+
+  sysfs_obj_name(d, link_name, path);
+  memset(rel_path, 0, sizeof(rel_path));
+
+  if (readlink(path, rel_path, sizeof(rel_path)) < 0)
+    return NULL;
+
+  sysfs_obj_name(d, "", path);
+  strcat(path, rel_path);
+
+  // Returns a pointer to malloc'ed memory
+  return realpath(path, NULL);
+}
+
+static int
+sysfs_get_value(struct pci_dev *d, char *object, int mandatory)
+{
+  char buf[OBJBUFSIZE];
+
+  if (sysfs_get_string(d, object, buf, mandatory))
+    return strtol(buf, NULL, 0);
+  else
+    return -1;
 }
 
 static void
@@ -123,18 +167,21 @@ sysfs_get_resources(struct pci_dev *d)
 	break;
       if (sscanf(buf, "%llx %llx %llx", &start, &end, &flags) != 3)
 	a->error("Syntax error in %s", namebuf);
-      if (start)
+      if (end > start)
 	size = end - start + 1;
       else
 	size = 0;
-      flags &= PCI_ADDR_FLAG_MASK;
       if (i < 6)
 	{
+	  d->flags[i] = flags;
+	  flags &= PCI_ADDR_FLAG_MASK;
 	  d->base_addr[i] = start | flags;
 	  d->size[i] = size;
 	}
       else
 	{
+	  d->rom_flags = flags;
+	  flags &= PCI_ADDR_FLAG_MASK;
 	  d->rom_base_addr = start | flags;
 	  d->rom_size = size;
 	}
@@ -152,7 +199,6 @@ static void sysfs_scan(struct pci_access *a)
   n = snprintf(dirname, sizeof(dirname), "%s/devices", sysfs_name(a));
   if (n < 0 || n >= (int) sizeof(dirname))
     a->error("Directory name too long");
-
   dir = opendir(dirname);
   if (!dir)
     a->error("Cannot open %s", dirname);
@@ -164,10 +210,15 @@ static void sysfs_scan(struct pci_access *a)
       /* ".", ".." or a special non-device perhaps */
       if (entry->d_name[0] == '.')
 	continue;
-	
+
       d = pci_alloc_dev(a);
       if (sscanf(entry->d_name, "%x:%x:%x.%d", &dom, &bus, &dev, &func) < 4)
 	a->error("sysfs_scan: Couldn't parse entry name %s", entry->d_name);
+
+      /* Ensure kernel provided domain that fits in a signed integer */
+      if (dom > 0x7fffffff)
+	a->error("sysfs_scan: Invalid domain %x", dom);
+
       d->domain = dom;
       d->bus = bus;
       d->dev = dev;
@@ -175,15 +226,15 @@ static void sysfs_scan(struct pci_access *a)
       if (!a->buscentric)
 	{
 	  sysfs_get_resources(d);
-	  d->irq = sysfs_get_value(d, "irq");
+	  d->irq = sysfs_get_value(d, "irq", 1);
 	  /*
 	   *  We could read these faster from the config registers, but we want to give
 	   *  the kernel a chance to fix up ID's and especially classes of broken devices.
 	   */
-	  d->vendor_id = sysfs_get_value(d, "vendor");
-	  d->device_id = sysfs_get_value(d, "device");
-	  d->device_class = sysfs_get_value(d, "class") >> 8;
-	  d->known_fields = PCI_FILL_IDENT | PCI_FILL_CLASS | PCI_FILL_IRQ | PCI_FILL_BASES | PCI_FILL_ROM_BASE | PCI_FILL_SIZES;
+	  d->vendor_id = sysfs_get_value(d, "vendor", 1);
+	  d->device_id = sysfs_get_value(d, "device", 1);
+	  d->device_class = sysfs_get_value(d, "class", 1) >> 8;
+	  d->known_fields = PCI_FILL_IDENT | PCI_FILL_CLASS | PCI_FILL_IRQ | PCI_FILL_BASES | PCI_FILL_ROM_BASE | PCI_FILL_SIZES | PCI_FILL_IO_FLAGS;
 	}
       pci_link_dev(a, d);
     }
@@ -210,6 +261,7 @@ sysfs_fill_slots(struct pci_access *a)
       char namebuf[OBJNAMELEN], buf[16];
       FILE *file;
       unsigned int dom, bus, dev;
+      int res = 0;
       struct pci_dev *d;
 
       /* ".", ".." or a special non-device perhaps */
@@ -228,16 +280,21 @@ sysfs_fill_slots(struct pci_access *a)
       if (!file)
 	continue;
 
-      if (!fgets(buf, sizeof(buf), file) || sscanf(buf, "%x:%x:%x", &dom, &bus, &dev) < 3)
-	a->warning("sysfs_fill_slots: Couldn't parse entry address %s", buf);
+      if (!fgets(buf, sizeof(buf), file) || (res = sscanf(buf, "%x:%x:%x", &dom, &bus, &dev)) < 3)
+	{
+	  /*
+	   * In some cases, the slot is not tied to a specific device before
+	   * a card gets inserted. This happens for example on IBM pSeries
+	   * and we need not warn about it.
+	   */
+	  if (res != 2)
+	    a->warning("sysfs_fill_slots: Couldn't parse entry address %s", buf);
+	}
       else
 	{
 	  for (d = a->devices; d; d = d->next)
-	    if (dom == d->domain && bus == d->bus && dev == d->dev && !d->phy_slot)
-	      {
-		d->phy_slot = pci_malloc(a, strlen(entry->d_name) + 1);
-		strcpy(d->phy_slot, entry->d_name);
-	      }
+	    if (dom == (unsigned)d->domain && bus == d->bus && dev == d->dev && !d->phy_slot)
+	      d->phy_slot = pci_set_property(d, PCI_FILL_PHYS_SLOT, entry->d_name);
 	}
       fclose(file);
     }
@@ -247,7 +304,6 @@ sysfs_fill_slots(struct pci_access *a)
 static int
 sysfs_fill_info(struct pci_dev *d, int flags)
 {
-  printf("CDNS Debug sysfs_fill_info\n");
   if ((flags & PCI_FILL_PHYS_SLOT) && !(d->known_fields & PCI_FILL_PHYS_SLOT))
     {
       struct pci_dev *pd;
@@ -255,6 +311,34 @@ sysfs_fill_info(struct pci_dev *d, int flags)
       for (pd = d->access->devices; pd; pd = pd->next)
 	pd->known_fields |= PCI_FILL_PHYS_SLOT;
     }
+
+  if ((flags & PCI_FILL_MODULE_ALIAS) && !(d->known_fields & PCI_FILL_MODULE_ALIAS))
+    {
+      char buf[OBJBUFSIZE];
+      if (sysfs_get_string(d, "modalias", buf, 0))
+	d->module_alias = pci_set_property(d, PCI_FILL_MODULE_ALIAS, buf);
+    }
+
+  if ((flags & PCI_FILL_LABEL) && !(d->known_fields & PCI_FILL_LABEL))
+    {
+      char buf[OBJBUFSIZE];
+      if (sysfs_get_string(d, "label", buf, 0))
+	d->label = pci_set_property(d, PCI_FILL_LABEL, buf);
+    }
+
+  if ((flags & PCI_FILL_NUMA_NODE) && !(d->known_fields & PCI_FILL_NUMA_NODE))
+    d->numa_node = sysfs_get_value(d, "numa_node", 0);
+
+  if ((flags & PCI_FILL_DT_NODE) && !(d->known_fields & PCI_FILL_DT_NODE))
+    {
+      char *node = sysfs_deref_link(d, "of_node");
+      if (node)
+	{
+	  pci_set_property(d, PCI_FILL_DT_NODE, node);
+	  free(node);
+	}
+    }
+
   return pci_generic_fill_info(d, flags);
 }
 

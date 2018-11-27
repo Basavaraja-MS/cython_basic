@@ -1,6 +1,7 @@
 /*
  *	The PCI Library -- Parameters
  *
+ *	Copyright (c) 2008 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */
@@ -84,4 +85,3 @@ pci_walk_params(struct pci_access *acc, struct pci_param *prev)
   else
     return prev->next;
 }
-

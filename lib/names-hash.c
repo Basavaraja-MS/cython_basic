@@ -1,6 +1,7 @@
 /*
  *	The PCI Library -- ID to Name Hash
  *
+ *	Copyright (c) 1997--2008 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */
@@ -101,6 +102,8 @@ char
 	  if (n->src == SRC_NET && !(flags & PCI_LOOKUP_NETWORK))
 	    continue;
 	  if (n->src == SRC_CACHE && !(flags & PCI_LOOKUP_CACHE))
+	    continue;
+	  if (n->src == SRC_HWDB && (flags & (PCI_LOOKUP_SKIP_LOCAL | PCI_LOOKUP_NO_HWDB)))
 	    continue;
 	  if (!best || best->src < n->src)
 	    best = n;

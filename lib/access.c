@@ -1,6 +1,7 @@
 /*
  *	The PCI Library -- User Access
  *
+ *	Copyright (c) 1997--2018 Martin Mares <mj@ucw.cz>
  *
  *	Can be freely distributed and used under the terms of the GNU GPL.
  */
@@ -15,7 +16,6 @@
 void
 pci_scan_bus(struct pci_access *a)
 {
-  printf("Invoked pci_scan_bus\n");
   a->methods->scan(a);
 }
 
@@ -28,6 +28,7 @@ pci_alloc_dev(struct pci_access *a)
   d->access = a;
   d->methods = a->methods;
   d->hdrtype = -1;
+  d->numa_node = -1;
   if (d->methods->init_dev)
     d->methods->init_dev(d);
   return d;
@@ -38,6 +39,18 @@ pci_link_dev(struct pci_access *a, struct pci_dev *d)
 {
   d->next = a->devices;
   a->devices = d;
+
+  /*
+   * Applications compiled with older versions of libpci do not expect
+   * 32-bit domain numbers. To keep them working, we keep a 16-bit
+   * version of the domain number at the previous location in struct
+   * pci_dev. This will keep backward compatibility on systems which
+   * don't require large domain numbers.
+   */
+  if (d->domain > 0xffff)
+    d->domain_16 = 0xffff;
+  else
+    d->domain_16 = d->domain;
 
   return 1;
 }
@@ -54,12 +67,25 @@ pci_get_dev(struct pci_access *a, int domain, int bus, int dev, int func)
   return d;
 }
 
+static void
+pci_free_properties(struct pci_dev *d)
+{
+  struct pci_property *p;
+
+  while (p = d->properties)
+    {
+      d->properties = p->next;
+      pci_mfree(p);
+    }
+}
+
 void pci_free_dev(struct pci_dev *d)
 {
   if (d->methods->cleanup_dev)
     d->methods->cleanup_dev(d);
+
   pci_free_caps(d);
-  pci_mfree(d->phy_slot);
+  pci_free_properties(d);
   pci_mfree(d);
 }
 
@@ -151,14 +177,24 @@ pci_write_block(struct pci_dev *d, int pos, byte *buf, int len)
   return d->methods->write(d, pos, buf, len);
 }
 
+static void
+pci_reset_properties(struct pci_dev *d)
+{
+  d->known_fields = 0;
+  d->phy_slot = NULL;
+  d->module_alias = NULL;
+  d->label = NULL;
+  pci_free_caps(d);
+  pci_free_properties(d);
+}
+
 int
-pci_fill_info_v31(struct pci_dev *d, int flags)
+pci_fill_info_v35(struct pci_dev *d, int flags)
 {
   if (flags & PCI_FILL_RESCAN)
     {
       flags &= ~PCI_FILL_RESCAN;
-      d->known_fields = 0;
-      pci_free_caps(d);
+      pci_reset_properties(d);
     }
   if (flags & ~d->known_fields)
     d->known_fields |= d->methods->fill_info(d, flags & ~d->known_fields);
@@ -166,14 +202,64 @@ pci_fill_info_v31(struct pci_dev *d, int flags)
 }
 
 /* In version 3.1, pci_fill_info got new flags => versioned alias */
-STATIC_ALIAS(int pci_fill_info(struct pci_dev *d, int flags), pci_fill_info_v31(d,flags));
-DEFINE_ALIAS(int pci_fill_info_v30(struct pci_dev *d, int flags), pci_fill_info_v31);
+/* In versions 3.2, 3.3, 3.4 and 3.5, the same has happened */
+STATIC_ALIAS(int pci_fill_info(struct pci_dev *d, int flags), pci_fill_info_v35(d, flags));
+DEFINE_ALIAS(int pci_fill_info_v30(struct pci_dev *d, int flags), pci_fill_info_v35);
+DEFINE_ALIAS(int pci_fill_info_v31(struct pci_dev *d, int flags), pci_fill_info_v35);
+DEFINE_ALIAS(int pci_fill_info_v32(struct pci_dev *d, int flags), pci_fill_info_v35);
+DEFINE_ALIAS(int pci_fill_info_v33(struct pci_dev *d, int flags), pci_fill_info_v35);
+DEFINE_ALIAS(int pci_fill_info_v34(struct pci_dev *d, int flags), pci_fill_info_v35);
 SYMBOL_VERSION(pci_fill_info_v30, pci_fill_info@LIBPCI_3.0);
-SYMBOL_VERSION(pci_fill_info_v31, pci_fill_info@@LIBPCI_3.1);
+SYMBOL_VERSION(pci_fill_info_v31, pci_fill_info@LIBPCI_3.1);
+SYMBOL_VERSION(pci_fill_info_v32, pci_fill_info@LIBPCI_3.2);
+SYMBOL_VERSION(pci_fill_info_v33, pci_fill_info@LIBPCI_3.3);
+SYMBOL_VERSION(pci_fill_info_v34, pci_fill_info@LIBPCI_3.4);
+SYMBOL_VERSION(pci_fill_info_v35, pci_fill_info@@LIBPCI_3.5);
 
 void
 pci_setup_cache(struct pci_dev *d, byte *cache, int len)
 {
   d->cache = cache;
   d->cache_len = len;
+}
+
+char *
+pci_set_property(struct pci_dev *d, u32 key, char *value)
+{
+  struct pci_property *p;
+  struct pci_property **pp = &d->properties;
+
+  while (p = *pp)
+    {
+      if (p->key == key)
+	{
+	  *pp = p->next;
+	  pci_mfree(p);
+	}
+      else
+	pp = &p->next;
+    }
+
+  if (!value)
+    return NULL;
+
+  p = pci_malloc(d->access, sizeof(*p) + strlen(value));
+  *pp = p;
+  p->next = NULL;
+  p->key = key;
+  strcpy(p->value, value);
+
+  return p->value;
+}
+
+char *
+pci_get_string_property(struct pci_dev *d, u32 prop)
+{
+  struct pci_property *p;
+
+  for (p = d->properties; p; p = p->next)
+    if (p->key == prop)
+      return p->value;
+
+  return NULL;
 }
