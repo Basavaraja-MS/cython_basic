@@ -11,6 +11,7 @@ local:
 
 test:
 	#cd pyc && python -c "import pcipy" && cd -
+	#cp lib/libpci.so.3.1.4 lib/libpci.so
 	cd pyc && python3 pcie_gui.py
 
 

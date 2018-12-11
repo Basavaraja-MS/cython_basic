@@ -1,4 +1,4 @@
-############!/usr/bin/env python
+#!/usr/bin/env python
 
 
 from pcipy import pci
@@ -38,7 +38,7 @@ def pcipm_get_curr_power_stat_t(plib, rp_dev, ep_dev, rp_cap, ep_cap):
 def pcipm_set_power_stat_t(plib, ep_dev, ep_cap, pcipm):
     pmc_ctl = plib.read_word(ep_dev, ep_cap + PCI_PM_CTRL)
     plib.write_word(ep_dev, ep_cap + PCI_PM_CTRL, (pmc_ctl & ~3) | pcipm)
-    logging.info("Current power state changed to :D%d", pmc_ctl)
+    logging.info("Current power state changed to :D%d", pmc_ctl & 3)
 
 def aspm_get_power_stat(plib, rp_dev, ep_dev, rp_cap, ep_cap):
     rp_lnk_cap = plib.read_word(rp_dev, rp_cap + PCI_EXP_LNKCAP)
@@ -195,6 +195,8 @@ def check_device_status(plib, rp_dev, ep_dev, rp_cap, ep_cap, dev_test):
         if (vid == 0xFFFF and did == 0xFFFF):
             logging.info("Check DID VID Failed")
             return False
+        else:
+            print("vid - did pass", vid, did)
     if(dev_test["aer_chk"] == True):
         logging.info("Yet to impliment")
     if(dev_test["dll_active_chk"] == True):
@@ -224,17 +226,21 @@ def pci_pm_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param):
     #dev_test = dict{}
     count = test_param["pcipm_test_count"]
     while (count):
+        print("count -", count)
         new_pm = count%4 # Generats a number for set aspm
         if(new_pm == 1 and d1_test == True):
             pcipm_set_power_stat_t(plib, ep_dev, ep_cap, new_pm)
         elif(new_pm == 2 and d2_test == True):
             pcipm_set_power_stat_t(plib, ep_dev, ep_cap, new_pm)
+        elif(new_pm == 1 or new_pm == 2):
+            continue
         else: #For D3hot and D0
             pcipm_set_power_stat_t(plib, ep_dev, ep_cap, new_pm)
 
-        time.sleep(1)
+        time.sleep(5)
         ret = check_device_status(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param)
-        if ret:
+        print("ret -", ret)
+        if ret == False:
             return ret
         count = count - 1
     pcipm_set_power_stat_t(plib, ep_dev, ep_cap, 0) #While exiting set to D0 state
@@ -282,8 +288,10 @@ def pci_aspm_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param):
     while (count):
         new_aspm = count % max_aspm # Generats a number for set aspm
         aspm_set_power_stat(plib, ep_dev, ep_cap, new_aspm)
-        time.sleep(1)
+        #time.sleep(1)
         ret = check_device_status(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param)
+        print ("ret -", ret)
+        ret = 0
         if ret:
             return ret
         count = count - 1
@@ -303,19 +311,25 @@ def pci_link_ret_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict):
 def pci_link_disable_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict):
     logging.info("PCIe Link Disable/Enable Test:")
     rpctl = plib.read_word(rp_dev, rp_cap + PCI_EXP_LNKCTL)
-    if rpctl & PCI_EXP_LNKCTL_DISABLE :
-        logging.info("Link is in Disabled state")
-        logging.info("Enable PCIe Link")
-        plib.write_word(rp_dev, rp_cap + PCI_EXP_LNKCTL, rpctl & ~PCI_EXP_LNKCTL_DISABLE)
-        check_device_status(lib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
-    else:
-        logging.info("Link is in Enabled state")
-        logging.info("Disable PCIe Link")
-        plib.write_word(rp_dev, rp_cap + PCI_EXP_LNKCTL, rpctl | PCI_EXP_LNKCTL_DISABLE)
-        if pci_check_DLL_link_active(plib, rp_dev, rp_cap) is False:
-            logging.info("Link Successfully in Disable state")
+    count = test_param_dict["link_disable_test_count"]
+    while (count):
+        if rpctl & PCI_EXP_LNKCTL_DISABLE :
+            logging.info("Link is in Disabled state")
+            logging.info("Enable PCIe Link")
+            rpctl = rpctl & ~PCI_EXP_LNKCTL_DISABLE
+            plib.write_word(rp_dev, rp_cap + PCI_EXP_LNKCTL, rpctl)
+            check_device_status(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
         else:
-            logging.error("Link Not entered to Disable state")
+            logging.info("Link is in Enabled state")
+            logging.info("Disable PCIe Link")
+            rpctl = rpctl | PCI_EXP_LNKCTL_DISABLE
+            plib.write_word(rp_dev, rp_cap + PCI_EXP_LNKCTL, rpctl)
+            if pci_check_DLL_link_active(plib, rp_dev, rp_cap) is False:
+                logging.info("Link Successfully in Disable state")
+            else:
+                logging.error("Link Not entered to Disable state")
+        count = count -1
+        time.sleep(1)
 
 
 
@@ -348,6 +362,75 @@ def main_test_fun(test_param_dict):
         pci_link_ret_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
     if (test_param_dict["link_disable_test"] == True):
         pci_link_disable_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
+
+test_param_dict = {
+    "pcipm_test": True,
+    "aspm_test": True,
+    "test_count": 10,
+    "aer_chk": False,
+    "dll_active_chk": False,
+    "print_only": False,
+    "d1": False,
+    "d2": False,
+    "id": True,
+    "max_aspm": 1,
+    "link_ret_test": True,
+    "link_ret_test_count": 10,
+    "aspm_test_count": 10,
+    "pcipm_test_count": 10,
+    "link_ret_test_count":100000,
+    "link_disable_test_count":10
+    }
+
+def pci_aspm():
+    plib = pci()
+    rp_dev = plib.get_device(0, 0, 2, 0)
+    ep_dev = plib.get_device(0, 1, 0, 0)
+    rp_cap = find_pcie_cap(plib, rp_dev, PCI_CAP_ID_EXP)
+    ep_cap = find_pcie_cap(plib, ep_dev, PCI_CAP_ID_EXP)
+    vendor_id, device_id = pci_read_vendor_device_id(plib, rp_dev)
+    logging.info("RP: %x- %x"  %(vendor_id, device_id))
+    pci_aspm_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
+
+#pci_aspm()
+def pcipm():
+    plib = pci()
+    rp_dev = plib.get_device(0, 0, 2, 0)
+    ep_dev = plib.get_device(0, 1, 0, 0)
+    rp_cap = find_pcie_cap(plib, rp_dev, PCI_CAP_ID_EXP)
+    ep_cap = find_pcie_cap(plib, ep_dev, PCI_CAP_ID_EXP)
+    vendor_id, device_id = pci_read_vendor_device_id(plib, rp_dev)
+    logging.info("RP: %x- %x"  %(vendor_id, device_id))
+    rp_pm_cap = find_pcie_cap(plib, rp_dev, PCI_CAP_ID_PM)
+    ep_pm_cap = find_pcie_cap(plib, ep_dev, PCI_CAP_ID_PM)
+    pci_pm_test(plib, rp_dev, ep_dev, rp_pm_cap, ep_pm_cap, test_param_dict)
+#pcipm()
+
+def pcilinkretrain():
+    plib = pci()
+    rp_dev = plib.get_device(0, 0, 2, 0)
+    ep_dev = plib.get_device(0, 1, 0, 0)
+    rp_cap = find_pcie_cap(plib, rp_dev, PCI_CAP_ID_EXP)
+    ep_cap = find_pcie_cap(plib, ep_dev, PCI_CAP_ID_EXP)
+    vendor_id, device_id = pci_read_vendor_device_id(plib, rp_dev)
+    logging.info("RP: %x- %x"  %(vendor_id, device_id))
+    pci_link_ret_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
+#pcilinkretrain()
+
+def pcilinkdisableenable():
+    plib = pci()
+    rp_dev = plib.get_device(0, 0, 2, 0)
+    ep_dev = plib.get_device(0, 5, 0, 0)
+    rp_cap = find_pcie_cap(plib, rp_dev, PCI_CAP_ID_EXP)
+    ep_cap = find_pcie_cap(plib, ep_dev, PCI_CAP_ID_EXP)
+    vendor_id, device_id = pci_read_vendor_device_id(plib, rp_dev)
+    logging.info("RP: %x- %x"  %(vendor_id, device_id))
+    count = 10
+    pci_link_disable_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
+    count = count -1 
+
+pcilinkdisableenable()
+
 """
 #test_param = dict{}
 test_param_dict = {

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'untitled.ui'
@@ -551,7 +552,7 @@ def test(test_param):
     t1.start()
     t1.join()
     
-
+"""
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -564,3 +565,4 @@ if __name__ == "__main__":
     dlg.raise_()
     PCIeApplicationStressTest.show()
 sys.exit(app.exec_())
+"""

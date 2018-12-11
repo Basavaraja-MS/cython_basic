@@ -20,7 +20,7 @@ ZLIB=no
 DNS=
 
 # Build libpci as a shared library (yes/no; or local for testing; requires GCC)
-SHARED=local
+SHARED=yes
 
 # ABI version suffix in the name of the shared library
 ABI_VERSION=.3
