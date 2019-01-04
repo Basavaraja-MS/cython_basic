@@ -12,15 +12,15 @@ PyQt5
 Running the test cases
 ----------------------
 GUI
-* make gui
-* Opens a GUI window and Log display window
+ - make gui
+ - Opens a GUI window and Log display window
 CLI
-* make cli
-* Runns all the test cases implimented and with all the monitoring logics implimented 
-* Log file found under output/testresults.txt
-* TIP: To watch realtime logs use tail -f output/testresults.txt
+ - make cli
+ - Runns all the test cases implimented and with all the monitoring logics implimented 
+ - Log file found under output/testresults.txt
+ - TIP: To watch realtime logs use tail -f output/testresults.txt
 clean
-* make clean 
+ - make clean 
 
 Project structure
 -----------------
