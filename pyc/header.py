@@ -1,8 +1,8 @@
 """
-Its really intresting how i get this file :) 
+Its really intresting how i get this file :)
 * its lib/header.h file
 * Replace /* */ by """ """
-* Replace = by awk '{$2="=" OFS $2} 1' file > file 
+* Replace = by awk '{$2="=" OFS $2} 1' file > file
 * comment macro functions by sed -e '/(x)/s/^/#/g' -i file
 """
 
@@ -21,7 +21,7 @@ PCI_COMMAND_WAIT = 0x80 """ Enable address/data stepping """
 PCI_COMMAND_SERR = 0x100 """ Enable SERR """
 PCI_COMMAND_FAST_BACK = 0x200 """ Enable back-to-back writes """
 PCI_COMMAND_DISABLE_INTx = 0x400 """ PCIE: Disable INTx interrupts """
- 
+
 PCI_STATUS = 0x06 """ 16 bits """
 PCI_STATUS_INTx = 0x08 """ PCIE: INTx interrupt pending """
 PCI_STATUS_CAP_LIST = 0x10 """ Support Capability List """
@@ -38,31 +38,31 @@ PCI_STATUS_REC_TARGET_ABORT = 0x1000 """ Master ack of " """
 PCI_STATUS_REC_MASTER_ABORT = 0x2000 """ Set on master abort """
 PCI_STATUS_SIG_SYSTEM_ERROR = 0x4000 """ Set when we drive SERR """
 PCI_STATUS_DETECTED_PARITY = 0x8000 """ Set on parity error """
- 
+
 PCI_CLASS_REVISION = 0x08 """ High 24 bits are class, low 8
 revision = """
 PCI_REVISION_ID = 0x08 """ Revision ID """
 PCI_CLASS_PROG = 0x09 """ Reg. Level Programming Interface """
 PCI_CLASS_DEVICE = 0x0a """ Device class """
- 
+
 PCI_CACHE_LINE_SIZE = 0x0c """ 8 bits """
 PCI_LATENCY_TIMER = 0x0d """ 8 bits """
 PCI_HEADER_TYPE = 0x0e """ 8 bits """
 PCI_HEADER_TYPE_NORMAL = 0
 PCI_HEADER_TYPE_BRIDGE = 1
 PCI_HEADER_TYPE_CARDBUS = 2
- 
+
 PCI_BIST = 0x0f """ 8 bits """
 PCI_BIST_CODE_MASK = 0x0f """ Return result """
 PCI_BIST_START = 0x40 """ 1 to start BIST, 2 secs or less """
 PCI_BIST_CAPABLE = 0x80 """ 1 if BIST capable """
- 
-""" 
+
+"""
 * = Base addresses specify locations in memory or I/O space.
 * = Decoded size can be determined by writing a value of
 * = 0xffffffff to the register, and reading it back. Only
 * = 1 bits are decoded.
-""" 
+"""
 PCI_BASE_ADDRESS_0 = 0x10 """ 32 bits """
 PCI_BASE_ADDRESS_1 = 0x14 """ 32 bits [htype 0,1 only] """
 PCI_BASE_ADDRESS_2 = 0x18 """ 32 bits [htype 0 only] """
@@ -80,7 +80,7 @@ PCI_BASE_ADDRESS_MEM_PREFETCH = 0x08 """ prefetchable? """
 PCI_BASE_ADDRESS_MEM_MASK = (~(pciaddr_t)0x0f)
 PCI_BASE_ADDRESS_IO_MASK = (~(pciaddr_t)0x03)
 """ = bit 1 is reserved if address_space = 1 """
- 
+
 """ = Header type 0 (normal devices) """
 PCI_CARDBUS_CIS = 0x28
 PCI_SUBSYSTEM_VENDOR_ID = 0x2c
@@ -88,15 +88,15 @@ PCI_SUBSYSTEM_ID = 0x2e
 PCI_ROM_ADDRESS = 0x30 """ Bits 31..11 are address, 10..1 reserved """
 PCI_ROM_ADDRESS_ENABLE = 0x01
 PCI_ROM_ADDRESS_MASK = (~(pciaddr_t)0x7ff)
- 
+
 PCI_CAPABILITY_LIST = 0x34 """ Offset of first capability list entry """
- 
+
 """ = 0x35-0x3b are reserved """
 PCI_INTERRUPT_LINE = 0x3c """ 8 bits """
 PCI_INTERRUPT_PIN = 0x3d """ 8 bits """
 PCI_MIN_GNT = 0x3e """ 8 bits """
 PCI_MAX_LAT = 0x3f """ 8 bits """
- 
+
 """ = Header type 1 (PCI-to-PCI bridges) """
 PCI_PRIMARY_BUS = 0x18 """ Primary bus number """
 PCI_SECONDARY_BUS = 0x19 """ Secondary bus number """
@@ -139,7 +139,7 @@ PCI_BRIDGE_CTL_PRI_DISCARD_TIMER = 0x100 """ PCI-X? """
 PCI_BRIDGE_CTL_SEC_DISCARD_TIMER = 0x200 """ PCI-X? """
 PCI_BRIDGE_CTL_DISCARD_TIMER_STATUS = 0x400 """ PCI-X? """
 PCI_BRIDGE_CTL_DISCARD_TIMER_SERR_EN = 0x800 """ PCI-X? """
- 
+
 """ = Header type 2 (CardBus bridges) """
 """ = 0x14-0x15 reserved """
 PCI_CB_SEC_STATUS = 0x16 """ Secondary status """
@@ -176,9 +176,9 @@ PCI_CB_SUBSYSTEM_VENDOR_ID = 0x40
 PCI_CB_SUBSYSTEM_ID = 0x42
 PCI_CB_LEGACY_MODE_BASE = 0x44 """ 16-bit PC Card legacy mode base address (ExCa) """
 """ = 0x48-0x7f reserved """
- 
+
 """ = Capability lists """
- 
+
 PCI_CAP_LIST_ID = 0 """ Capability ID """
 PCI_CAP_ID_PM = 0x01 """ Power Management """
 PCI_CAP_ID_AGP = 0x02 """ Accelerated Graphics Port """
@@ -202,9 +202,9 @@ PCI_CAP_ID_AF = 0x13 """ Advanced features of PCI devices integrated in PCIe roo
 PCI_CAP_LIST_NEXT = 1 """ Next capability in the list """
 PCI_CAP_FLAGS = 2 """ Capability defined flags (16 bits) """
 PCI_CAP_SIZEOF = 4
- 
+
 """ = Capabilities residing in the PCI Express extended configuration space """
- 
+
 PCI_EXT_CAP_ID_AER = 0x01 """ Advanced Error Reporting """
 PCI_EXT_CAP_ID_VC = 0x02 """ Virtual Channel """
 PCI_EXT_CAP_ID_DSN = 0x03 """ Device Serial Number """
@@ -219,9 +219,9 @@ PCI_EXT_CAP_ID_ACS = 0x0d """ Access Controls """
 PCI_EXT_CAP_ID_ARI = 0x0e """ Alternative Routing-ID Interpretation """
 PCI_EXT_CAP_ID_ATS = 0x0f """ Address Translation Service """
 PCI_EXT_CAP_ID_SRIOV = 0x10 """ Single Root I/O Virtualization """
- 
+
 """ = Power Management Registers """
- 
+
 PCI_PM_CAP_VER_MASK = 0x0007 """ Version (2=PM1.1) """
 PCI_PM_CAP_PME_CLOCK = 0x0008 """ Clock required for PME generation """
 PCI_PM_CAP_DSI = 0x0020 """ Device specific initialization required """
@@ -245,9 +245,9 @@ PCI_PM_PPB_B2_B3 = 0x40 """ If bridge enters D3hot, bus enters: 0=B3, 1=B2 """
 PCI_PM_BPCC_ENABLE = 0x80 """ Secondary bus is power managed """
 PCI_PM_DATA_REGISTER = 7 """ PM table contents read here """
 PCI_PM_SIZEOF = 8
- 
+
 """ = AGP registers """
- 
+
 PCI_AGP_VERSION = 2 """ BCD version number """
 PCI_AGP_RFU = 3 """ Rest of capability flags """
 PCI_AGP_STATUS = 4 """ Status register """
@@ -278,23 +278,23 @@ PCI_AGP_COMMAND_RATE4 = 0x0004 """ Use 4x rate (RFU in AGP3 mode) """
 PCI_AGP_COMMAND_RATE2 = 0x0002 """ Use 2x rate (8x in AGP3 mode) """
 PCI_AGP_COMMAND_RATE1 = 0x0001 """ Use 1x rate (4x in AGP3 mode) """
 PCI_AGP_SIZEOF = 12
- 
+
 """ = Vital Product Data """
- 
+
 PCI_VPD_ADDR = 2 """ Address to access (15 bits!) """
 PCI_VPD_ADDR_MASK = 0x7fff """ Address mask """
 PCI_VPD_ADDR_F = 0x8000 """ Write 0, 1 indicates completion """
 PCI_VPD_DATA = 4 """ 32-bits of data returned here """
- 
+
 """ = Slot Identification """
- 
+
 PCI_SID_ESR = 2 """ Expansion Slot Register """
 PCI_SID_ESR_NSLOTS = 0x1f """ Number of expansion slots available """
 PCI_SID_ESR_FIC = 0x20 """ First In Chassis Flag """
 PCI_SID_CHASSIS_NR = 3 """ Chassis Number """
- 
+
 """ = Message Signaled Interrupts registers """
- 
+
 PCI_MSI_FLAGS = 2 """ Various flags """
 PCI_MSI_FLAGS_MASK_BIT = 0x100 """ interrupt masking & reporting supported """
 PCI_MSI_FLAGS_64BIT = 0x080 """ 64-bit addresses allowed """
@@ -310,7 +310,7 @@ PCI_MSI_MASK_BIT_32 = 12 """ per-vector masking for 32-bit devices """
 PCI_MSI_MASK_BIT_64 = 16 """ per-vector masking for 64-bit devices """
 PCI_MSI_PENDING_32 = 16 """ per-vector interrupt pending for 32-bit devices """
 PCI_MSI_PENDING_64 = 20 """ per-vector interrupt pending for 64-bit devices """
- 
+
 """ = PCI-X """
 PCI_PCIX_COMMAND = 2 """ Command register offset """
 PCI_PCIX_COMMAND_DPERE = 0x0001 """ Data Parity Error Recover Enable """
@@ -334,7 +334,7 @@ PCI_PCIX_STATUS_RCVD_SC_ERR_MESS = 0x20000000 """ Received Split Completion Erro
 PCI_PCIX_STATUS_266MHZ = 0x40000000 """ 266 MHz capable """
 PCI_PCIX_STATUS_533MHZ = 0x80000000 """ 533 MHz capable """
 PCI_PCIX_SIZEOF = 4
- 
+
 """ = PCI-X Bridges """
 PCI_PCIX_BRIDGE_SEC_STATUS = 2 """ Secondary bus status register offset """
 PCI_PCIX_BRIDGE_SEC_STATUS_64BIT = 0x0001
@@ -361,7 +361,7 @@ PCI_PCIX_BRIDGE_DOWNSTREAM_SPLIT_TRANS_CTRL = 12 """ Downstream Split Transactio
 PCI_PCIX_BRIDGE_STR_CAPACITY = 0x0000ffff
 PCI_PCIX_BRIDGE_STR_COMMITMENT_LIMIT = 0xffff0000
 PCI_PCIX_BRIDGE_SIZEOF = 12
- 
+
 """ = HyperTransport (as of spec rev. 2.00) """
 PCI_HT_CMD = 2 """ Command Register """
 PCI_HT_CMD_TYP_HI = 0xe000 """ Capability Type high part """
@@ -379,7 +379,7 @@ PCI_HT_CMD_TYP_DR = 0xb000 """ DirectRoute """
 PCI_HT_CMD_TYP_VCS = 0xb800 """ VCSet """
 PCI_HT_CMD_TYP_RM = 0xc000 """ Retry Mode """
 PCI_HT_CMD_TYP_X86 = 0xc800 """ X86 (reserved) """
- 
+
 """ = Link Control Register """
 PCI_HT_LCTR_CFLE = 0x0002 """ CRC Flood Enable """
 PCI_HT_LCTR_CST = 0x0004 """ CRC Start Test """
@@ -393,7 +393,7 @@ PCI_HT_LCTR_ISOCEN = 0x1000 """ Isochronous Flow Control Enable """
 PCI_HT_LCTR_LSEN = 0x2000 """ LDTSTOP# Tristate Enable """
 PCI_HT_LCTR_EXTCTL = 0x4000 """ Extended CTL Time """
 PCI_HT_LCTR_64B = 0x8000 """ 64-bit Addressing Enable """
- 
+
 """ = Link Configuration Register """
 PCI_HT_LCNF_MLWI = 0x0007 """ Max Link Width In """
 PCI_HT_LCNF_LW_8B = 0x0 """ Link Width 8 bits """
@@ -409,11 +409,11 @@ PCI_HT_LCNF_LWI = 0x0700 """ Link Width In """
 PCI_HT_LCNF_DFIE = 0x0800 """ Doubleword Flow Control In Enable """
 PCI_HT_LCNF_LWO = 0x7000 """ Link Width Out """
 PCI_HT_LCNF_DFOE = 0x8000 """ Doubleword Flow Control Out Enable """
- 
+
 """ = Revision ID Register """
 PCI_HT_RID_MIN = 0x1f """ Minor Revision """
 PCI_HT_RID_MAJ = 0xe0 """ Major Revision """
- 
+
 """ = Link Frequency/Error Register """
 PCI_HT_LFRER_FREQ = 0x0f """ Transmitter Clock Frequency """
 PCI_HT_LFRER_200 = 0x00 """ 200MHz """
@@ -432,7 +432,7 @@ PCI_HT_LFRER_PROT = 0x10 """ Protocol Error """
 PCI_HT_LFRER_OV = 0x20 """ Overflow Error """
 PCI_HT_LFRER_EOC = 0x40 """ End of Chain Error """
 PCI_HT_LFRER_CTLT = 0x80 """ CTL Timeout """
- 
+
 """ = Link Frequency Capability Register """
 PCI_HT_LFCAP_200 = 0x0001 """ 200MHz """
 PCI_HT_LFCAP_300 = 0x0002 """ 300MHz """
@@ -445,7 +445,7 @@ PCI_HT_LFCAP_1200 = 0x0080 """ 1.2GHz """
 PCI_HT_LFCAP_1400 = 0x0100 """ 1.4GHz """
 PCI_HT_LFCAP_1600 = 0x0200 """ 1.6GHz """
 PCI_HT_LFCAP_VEND = 0x8000 """ Vendor-Specific """
- 
+
 """ = Feature Register """
 PCI_HT_FTR_ISOCFC = 0x0001 """ Isochronous Flow Control Mode """
 PCI_HT_FTR_LDTSTOP = 0x0002 """ LDTSTOP# Supported """
@@ -453,7 +453,7 @@ PCI_HT_FTR_CRCTM = 0x0004 """ CRC Test Mode """
 PCI_HT_FTR_ECTLT = 0x0008 """ Extended CTL Time Required """
 PCI_HT_FTR_64BA = 0x0010 """ 64-bit Addressing """
 PCI_HT_FTR_UIDRD = 0x0020 """ UnitID Reorder Disable """
- 
+
 """ = Error Handling Register """
 PCI_HT_EH_PFLE = 0x0001 """ Protocol Error Flood Enable """
 PCI_HT_EH_OFLE = 0x0002 """ Overflow Error Flood Enable """
@@ -471,7 +471,7 @@ PCI_HT_EH_EOCNFE = 0x1000 """ End of Chain Error Nonfatal Enable """
 PCI_HT_EH_RNFE = 0x2000 """ Response Error Nonfatal Enable """
 PCI_HT_EH_CRCNFE = 0x4000 """ CRC Error Nonfatal Enable """
 PCI_HT_EH_SERRNFE = 0x8000 """ System Error Nonfatal Enable """
- 
+
 """ = HyperTransport: Slave or Primary Interface """
 PCI_HT_PRI_CMD = 2 """ Command Register """
 PCI_HT_PRI_CMD_BUID = 0x001f """ Base UnitID """
@@ -479,7 +479,7 @@ PCI_HT_PRI_CMD_UC = 0x03e0 """ Unit Count """
 PCI_HT_PRI_CMD_MH = 0x0400 """ Master Host """
 PCI_HT_PRI_CMD_DD = 0x0800 """ Default Direction """
 PCI_HT_PRI_CMD_DUL = 0x1000 """ Drop on Uninitialized Link """
- 
+
 PCI_HT_PRI_LCTR0 = 4 """ Link Control 0 Register """
 PCI_HT_PRI_LCNF0 = 6 """ Link Config 0 Register """
 PCI_HT_PRI_LCTR1 = 8 """ Link Control 1 Register """
@@ -496,7 +496,7 @@ PCI_HT_PRI_MBU = 24 """ Memory Base Upper Register """
 PCI_HT_PRI_MLU = 25 """ Memory Limit Upper Register """
 PCI_HT_PRI_BN = 26 """ Bus Number Register """
 PCI_HT_PRI_SIZEOF = 28
- 
+
 """ = HyperTransport: Host or Secondary Interface """
 PCI_HT_SEC_CMD = 2 """ Command Register """
 PCI_HT_SEC_CMD_WR = 0x0001 """ Warm Reset """
@@ -507,7 +507,7 @@ PCI_HT_SEC_CMD_HH = 0x0100 """ Host Hide """
 PCI_HT_SEC_CMD_AS = 0x0400 """ Act as Slave """
 PCI_HT_SEC_CMD_HIECE = 0x0800 """ Host Inbound End of Chain Error """
 PCI_HT_SEC_CMD_DUL = 0x1000 """ Drop on Uninitialized Link """
- 
+
 PCI_HT_SEC_LCTR = 4 """ Link Control Register """
 PCI_HT_SEC_LCNF = 6 """ Link Config Register """
 PCI_HT_SEC_RID = 8 """ Revision ID Register """
@@ -521,7 +521,7 @@ PCI_HT_SEC_EH = 18 """ Error Handling Register """
 PCI_HT_SEC_MBU = 20 """ Memory Base Upper Register """
 PCI_HT_SEC_MLU = 21 """ Memory Limit Upper Register """
 PCI_HT_SEC_SIZEOF = 24
- 
+
 """ = HyperTransport: Switch """
 PCI_HT_SW_CMD = 2 """ Switch Command Register """
 PCI_HT_SW_CMD_VIBERR = 0x0080 """ VIB Error """
@@ -542,7 +542,7 @@ PCI_HT_SW_PCD = 12 """ Performance Counter Data Register """
 PCI_HT_SW_BLRD = 16 """ Base/Limit Range Data Register """
 PCI_HT_SW_SBD = 20 """ Secondary Base Data Register """
 PCI_HT_SW_SIZEOF = 24
- 
+
 """ = Counter indices """
 PCI_HT_SW_PC_PCR = 0x0 """ Posted Command Receive """
 PCI_HT_SW_PC_NPCR = 0x1 """ Nonposted Command Receive """
@@ -556,22 +556,22 @@ PCI_HT_SW_PC_RCT = 0x8 """ Response Command Transmit """
 PCI_HT_SW_PC_PDWT = 0x9 """ Posted DW Transmit """
 PCI_HT_SW_PC_NPDWT = 0xa """ Nonposted DW Transmit """
 PCI_HT_SW_PC_RDWT = 0xb """ Response DW Transmit """
- 
+
 """ = Base/Limit Range indices """
 PCI_HT_SW_BLR_BASE0_LO = 0x0 """ Base 0[31:1], Enable """
 PCI_HT_SW_BLR_BASE0_HI = 0x1 """ Base 0 Upper """
 PCI_HT_SW_BLR_LIM0_LO = 0x2 """ Limit 0 Lower """
 PCI_HT_SW_BLR_LIM0_HI = 0x3 """ Limit 0 Upper """
- 
+
 """ = Secondary Base indices """
 PCI_HT_SW_SB_LO = 0x0 """ Secondary Base[31:1], Enable """
 PCI_HT_SW_S0_HI = 0x1 """ Secondary Base Upper """
- 
+
 """ = HyperTransport: Interrupt Discovery and Configuration """
 PCI_HT_IDC_IDX = 2 """ Index Register """
 PCI_HT_IDC_DATA = 4 """ Data Register """
 PCI_HT_IDC_SIZEOF = 8
- 
+
 """ = Register indices """
 PCI_HT_IDC_IDX_LINT = 0x01 """ Last Interrupt Register """
 PCI_HT_IDC_LINT = 0x00ff0000 """ Last interrupt definition """
@@ -587,16 +587,16 @@ PCI_HT_IDC_IDR_II_24 = 0xff000000 """ IntrInfo[31:24] """
 PCI_HT_IDC_IDR_II_32 = 0x00ffffff """ IntrInfo[55:32] """
 PCI_HT_IDC_IDR_PASSPW = 0x40000000 """ PassPW setting for messages """
 PCI_HT_IDC_IDR_WEOI = 0x80000000 """ Waiting for EOI """
- 
+
 """ = HyperTransport: Revision ID """
 PCI_HT_RID_RID = 2 """ Revision Register """
 PCI_HT_RID_SIZEOF = 4
- 
+
 """ = HyperTransport: UnitID Clumping """
 PCI_HT_UIDC_CS = 4 """ Clumping Support Register """
 PCI_HT_UIDC_CE = 8 """ Clumping Enable Register """
 PCI_HT_UIDC_SIZEOF = 12
- 
+
 """ = HyperTransport: Extended Configuration Space Access """
 PCI_HT_ECSA_ADDR = 4 """ Configuration Address Register """
 PCI_HT_ECSA_ADDR_REG = 0x00000ffc """ Register """
@@ -606,7 +606,7 @@ PCI_HT_ECSA_ADDR_BUS = 0x0ff00000 """ Bus Number """
 PCI_HT_ECSA_ADDR_TYPE = 0x10000000 """ Access Type """
 PCI_HT_ECSA_DATA = 8 """ Configuration Data Register """
 PCI_HT_ECSA_SIZEOF = 12
- 
+
 """ = HyperTransport: Address Mapping """
 PCI_HT_AM_CMD = 2 """ Command Register """
 PCI_HT_AM_CMD_NDMA = 0x000f """ Number of DMA Mappings """
@@ -614,13 +614,13 @@ PCI_HT_AM_CMD_IOSIZ = 0x01f0 """ I/O Size """
 PCI_HT_AM_CMD_MT = 0x0600 """ Map Type """
 PCI_HT_AM_CMD_MT_40B = 0x0000 """ 40-bit """
 PCI_HT_AM_CMD_MT_64B = 0x0200 """ 64-bit """
- 
+
 """ = Window Control Register bits """
 PCI_HT_AM_SBW_CTR_COMP = 0x1 """ Compat """
 PCI_HT_AM_SBW_CTR_NCOH = 0x2 """ NonCoherent """
 PCI_HT_AM_SBW_CTR_ISOC = 0x4 """ Isochronous """
 PCI_HT_AM_SBW_CTR_EN = 0x8 """ Enable """
- 
+
 """ = HyperTransport: 40-bit Address Mapping """
 PCI_HT_AM40_SBNPW = 4 """ Secondary Bus Non-Prefetchable Window Register """
 PCI_HT_AM40_SBW_BASE = 0x000fffff """ Window Base """
@@ -632,13 +632,13 @@ PCI_HT_AM40_DMA_CTR_CTR = 0xf0 """ Window Control """
 PCI_HT_AM40_DMA_SLIM0 = 16 """ DMA Window Secondary Limit 0 Register """
 PCI_HT_AM40_DMA_SBASE0 = 18 """ DMA Window Secondary Base 0 Register """
 PCI_HT_AM40_SIZEOF = 12 """ size is variable: 12 + 8 * NDMA """
- 
+
 """ = HyperTransport: 64-bit Address Mapping """
 PCI_HT_AM64_IDX = 4 """ Index Register """
 PCI_HT_AM64_DATA_LO = 8 """ Data Lower Register """
 PCI_HT_AM64_DATA_HI = 12 """ Data Upper Register """
 PCI_HT_AM64_SIZEOF = 16
- 
+
 """ = Register indices """
 PCI_HT_AM64_IDX_SBNPW = 0x00 """ Secondary Bus Non-Prefetchable Window Register """
 PCI_HT_AM64_W_BASE_LO = 0xfff00000 """ Window Base Lower """
@@ -648,7 +648,7 @@ PCI_HT_AM64_IDX_PBNPW = 0x02 """ Primary Bus Non-Prefetchable Window Register ""
 PCI_HT_AM64_IDX_DMAPB0 = 0x04 """ DMA Window Primary Base 0 Register """
 PCI_HT_AM64_IDX_DMASB0 = 0x05 """ DMA Window Secondary Base 0 Register """
 PCI_HT_AM64_IDX_DMASL0 = 0x06 """ DMA Window Secondary Limit 0 Register """
- 
+
 """ = HyperTransport: MSI Mapping """
 PCI_HT_MSIM_CMD = 2 """ Command Register """
 PCI_HT_MSIM_CMD_EN = 0x0001 """ Mapping Active """
@@ -656,7 +656,7 @@ PCI_HT_MSIM_CMD_FIXD = 0x0002 """ MSI Mapping Address Fixed """
 PCI_HT_MSIM_ADDR_LO = 4 """ MSI Mapping Address Lower Register """
 PCI_HT_MSIM_ADDR_HI = 8 """ MSI Mapping Address Upper Register """
 PCI_HT_MSIM_SIZEOF = 12
- 
+
 """ = HyperTransport: DirectRoute """
 PCI_HT_DR_CMD = 2 """ Command Register """
 PCI_HT_DR_CMD_NDRS = 0x000f """ Number of DirectRoute Spaces """
@@ -664,7 +664,7 @@ PCI_HT_DR_CMD_IDX = 0x01f0 """ Index """
 PCI_HT_DR_EN = 4 """ Enable Vector Register """
 PCI_HT_DR_DATA = 8 """ Data Register """
 PCI_HT_DR_SIZEOF = 12
- 
+
 """ = Register indices """
 PCI_HT_DR_IDX_BASE_LO = 0x00 """ DirectRoute Base Lower Register """
 PCI_HT_DR_OTNRD = 0x00000001 """ Opposite to Normal Request Direction """
@@ -672,7 +672,7 @@ PCI_HT_DR_BL_LO = 0xffffff00 """ Base/Limit Lower """
 PCI_HT_DR_IDX_BASE_HI = 0x01 """ DirectRoute Base Upper Register """
 PCI_HT_DR_IDX_LIMIT_LO = 0x02 """ DirectRoute Limit Lower Register """
 PCI_HT_DR_IDX_LIMIT_HI = 0x03 """ DirectRoute Limit Upper Register """
- 
+
 """ = HyperTransport: VCSet """
 PCI_HT_VCS_SUP = 4 """ VCSets Supported Register """
 PCI_HT_VCS_L1EN = 5 """ Link 1 VCSets Enabled Register """
@@ -686,7 +686,7 @@ PCI_HT_VCS_SSUP_15 = 0x02 """ Streaming VCs 0-15 """
 PCI_HT_VCS_NFCBD = 12 """ Non-FC Bucket Depth Register """
 PCI_HT_VCS_NFCINT = 13 """ Non-FC Bucket Interval Register """
 PCI_HT_VCS_SIZEOF = 16
- 
+
 """ = HyperTransport: Retry Mode """
 PCI_HT_RM_CTR0 = 4 """ Control 0 Register """
 PCI_HT_RM_CTR_LRETEN = 0x01 """ Link Retry Enable """
@@ -705,7 +705,7 @@ PCI_HT_RM_STS1 = 7 """ Status 1 Register """
 PCI_HT_RM_CNT0 = 8 """ Retry Count 0 Register """
 PCI_HT_RM_CNT1 = 10 """ Retry Count 1 Register """
 PCI_HT_RM_SIZEOF = 12
- 
+
 """ = PCI Express """
 PCI_EXP_FLAGS = 0x2 """ Capabilities register """
 PCI_EXP_FLAGS_VERS = 0x000f """ Capability version """
@@ -857,7 +857,7 @@ PCI_EXP_LNKSTA2 = 0x32 """ Link Status """
 PCI_EXP_SLTCAP2 = 0x34 """ Slot Capabilities """
 PCI_EXP_SLTCTL2 = 0x38 """ Slot Control """
 PCI_EXP_SLTSTA2 = 0x3a """ Slot Status """
- 
+
 """ = MSI-X """
 PCI_MSIX_ENABLE = 0x8000
 PCI_MSIX_MASK = 0x4000
@@ -865,11 +865,11 @@ PCI_MSIX_TABSIZE = 0x07ff
 PCI_MSIX_TABLE = 4
 PCI_MSIX_PBA = 8
 PCI_MSIX_BIR = 0x7
- 
+
 """ = Subsystem vendor/device ID for PCI bridges """
 PCI_SSVID_VENDOR = 4
 PCI_SSVID_DEVICE = 6
- 
+
 """ = PCI Advanced Features """
 PCI_AF_CAP = 3
 PCI_AF_CAP_TP = 0x01
@@ -878,7 +878,7 @@ PCI_AF_CTRL = 4
 PCI_AF_CTRL_FLR = 0x01
 PCI_AF_STATUS = 5
 PCI_AF_STATUS_TP = 0x01
- 
+
 """ = Advanced Error Reporting """
 PCI_ERR_UNCOR_STATUS = 4 """ Uncorrectable Error Status """
 PCI_ERR_UNC_TRAIN = 0x00000001 """ Undefined in PCIe rev1.1 & 2.0 spec """
@@ -918,7 +918,7 @@ PCI_ERR_ROOT_COMMAND = 44 """ Root Error Command """
 PCI_ERR_ROOT_STATUS = 48
 PCI_ERR_ROOT_COR_SRC = 52
 PCI_ERR_ROOT_SRC = 54
- 
+
 """ = Virtual Channel """
 PCI_VC_PORT_REG1 = 4
 PCI_VC_PORT_REG2 = 8
@@ -927,7 +927,7 @@ PCI_VC_PORT_STATUS = 14
 PCI_VC_RES_CAP = 16
 PCI_VC_RES_CTRL = 20
 PCI_VC_RES_STATUS = 26
- 
+
 """ = Power Budgeting """
 PCI_PWR_DSR = 4 """ Data Select Register """
 PCI_PWR_DATA = 8 """ Data Register """
@@ -939,7 +939,7 @@ PCI_PWR_DATA = 8 """ Data Register """
 #PCI_PWR_DATA_RAIL(x) = (((x) >> 18) & 7) """ Power Rail """
 PCI_PWR_CAP = 12 """ Capability """
 #PCI_PWR_CAP_BUDGET(x) = ((x) & 1) """ Included in system budget """
- 
+
 """ = Access Control Services """
 PCI_ACS_CAP = 0x04 """ ACS Capability Register """
 PCI_ACS_CAP_VALID = 0x0001 """ ACS Source Validation """
@@ -959,7 +959,7 @@ PCI_ACS_CTRL_FORWARD = 0x0010 """ ACS Upstream Forwarding Enable """
 PCI_ACS_CTRL_EGRESS = 0x0020 """ ACS P2P Egress Control Enable """
 PCI_ACS_CTRL_TRANS = 0x0040 """ ACS Direct Translated P2P Enable """
 PCI_ACS_EGRESS_CTRL = 0x08 """ Egress Control Vector """
- 
+
 """ = Alternative Routing-ID Interpretation """
 PCI_ARI_CAP = 0x04 """ ARI Capability Register """
 PCI_ARI_CAP_MFVC = 0x0001 """ MFVC Function Groups Capability """
@@ -969,14 +969,14 @@ PCI_ARI_CTRL = 0x06 """ ARI Control Register """
 PCI_ARI_CTRL_MFVC = 0x0001 """ MFVC Function Groups Enable """
 PCI_ARI_CTRL_ACS = 0x0002 """ ACS Function Groups Enable """
 #PCI_ARI_CTRL_FG(x) = (((x) >> 4) & 7) """ Function Group """
- 
+
 """ = Address Translation Service """
 PCI_ATS_CAP = 0x04 """ ATS Capability Register """
 #PCI_ATS_CAP_IQD(x) = ((x) & 0x1f) """ Invalidate Queue Depth """
 PCI_ATS_CTRL = 0x06 """ ATS Control Register """
 #PCI_ATS_CTRL_STU(x) = ((x) & 0x1f) """ Smallest Translation Unit """
 PCI_ATS_CTRL_ENABLE = 0x8000 """ ATS Enable """
- 
+
 """ = Single Root I/O Virtualization """
 PCI_IOV_CAP = 0x04 """ SR-IOV Capability Register """
 PCI_IOV_CAP_VFM = 0x00000001 """ VF Migration Capable """
@@ -1005,24 +1005,24 @@ PCI_IOV_MSAO = 0x3c """ VF Migration State Array Offset """
 #    return ((x) & 7) """ VF Migration State BIR """
 #def PCI_IOV_MSA_OFFSET(x):
 #    return ((x) & 0xfffffff8) """ VF Migration State Offset """
- 
-""" 
+
+"""
 * = The PCI interface treats multi-function devices as independent
 * = devices. The slot/function address of each device is encoded
 * = in a single byte as follows:
-* 
+*
 * = 7:3 = slot
 * = 2:0 = function
-""" 
+"""
 PCI_DEVFN(slot,func) = ((((slot) & 0x1f) << 3) | ((func) & 0x07))
 PCI_SLOT(devfn) = (((devfn) >> 3) & 0x1f)
 PCI_FUNC(devfn) = ((devfn) & 0x07)
- 
+
 """ = Device classes and subclasses """
- 
+
 PCI_CLASS_NOT_DEFINED = 0x0000
 PCI_CLASS_NOT_DEFINED_VGA = 0x0001
- 
+
 PCI_BASE_CLASS_STORAGE = 0x01
 PCI_CLASS_STORAGE_SCSI = 0x0100
 PCI_CLASS_STORAGE_IDE = 0x0101
@@ -1033,7 +1033,7 @@ PCI_CLASS_STORAGE_ATA = 0x0105
 PCI_CLASS_STORAGE_SATA = 0x0106
 PCI_CLASS_STORAGE_SAS = 0x0107
 PCI_CLASS_STORAGE_OTHER = 0x0180
- 
+
 PCI_BASE_CLASS_NETWORK = 0x02
 PCI_CLASS_NETWORK_ETHERNET = 0x0200
 PCI_CLASS_NETWORK_TOKEN_RING = 0x0201
@@ -1041,25 +1041,25 @@ PCI_CLASS_NETWORK_FDDI = 0x0202
 PCI_CLASS_NETWORK_ATM = 0x0203
 PCI_CLASS_NETWORK_ISDN = 0x0204
 PCI_CLASS_NETWORK_OTHER = 0x0280
- 
+
 PCI_BASE_CLASS_DISPLAY = 0x03
 PCI_CLASS_DISPLAY_VGA = 0x0300
 PCI_CLASS_DISPLAY_XGA = 0x0301
 PCI_CLASS_DISPLAY_3D = 0x0302
 PCI_CLASS_DISPLAY_OTHER = 0x0380
- 
+
 PCI_BASE_CLASS_MULTIMEDIA = 0x04
 PCI_CLASS_MULTIMEDIA_VIDEO = 0x0400
 PCI_CLASS_MULTIMEDIA_AUDIO = 0x0401
 PCI_CLASS_MULTIMEDIA_PHONE = 0x0402
 PCI_CLASS_MULTIMEDIA_AUDIO_DEV = 0x0403
 PCI_CLASS_MULTIMEDIA_OTHER = 0x0480
- 
+
 PCI_BASE_CLASS_MEMORY = 0x05
 PCI_CLASS_MEMORY_RAM = 0x0500
 PCI_CLASS_MEMORY_FLASH = 0x0501
 PCI_CLASS_MEMORY_OTHER = 0x0580
- 
+
 PCI_BASE_CLASS_BRIDGE = 0x06
 PCI_CLASS_BRIDGE_HOST = 0x0600
 PCI_CLASS_BRIDGE_ISA = 0x0601
@@ -1073,14 +1073,14 @@ PCI_CLASS_BRIDGE_RACEWAY = 0x0608
 PCI_CLASS_BRIDGE_PCI_SEMI = 0x0609
 PCI_CLASS_BRIDGE_IB_TO_PCI = 0x060a
 PCI_CLASS_BRIDGE_OTHER = 0x0680
- 
+
 PCI_BASE_CLASS_COMMUNICATION = 0x07
 PCI_CLASS_COMMUNICATION_SERIAL = 0x0700
 PCI_CLASS_COMMUNICATION_PARALLEL = 0x0701
 PCI_CLASS_COMMUNICATION_MSERIAL = 0x0702
 PCI_CLASS_COMMUNICATION_MODEM = 0x0703
 PCI_CLASS_COMMUNICATION_OTHER = 0x0780
- 
+
 PCI_BASE_CLASS_SYSTEM = 0x08
 PCI_CLASS_SYSTEM_PIC = 0x0800
 PCI_CLASS_SYSTEM_DMA = 0x0801
@@ -1088,7 +1088,7 @@ PCI_CLASS_SYSTEM_TIMER = 0x0802
 PCI_CLASS_SYSTEM_RTC = 0x0803
 PCI_CLASS_SYSTEM_PCI_HOTPLUG = 0x0804
 PCI_CLASS_SYSTEM_OTHER = 0x0880
- 
+
 PCI_BASE_CLASS_INPUT = 0x09
 PCI_CLASS_INPUT_KEYBOARD = 0x0900
 PCI_CLASS_INPUT_PEN = 0x0901
@@ -1096,11 +1096,11 @@ PCI_CLASS_INPUT_MOUSE = 0x0902
 PCI_CLASS_INPUT_SCANNER = 0x0903
 PCI_CLASS_INPUT_GAMEPORT = 0x0904
 PCI_CLASS_INPUT_OTHER = 0x0980
- 
+
 PCI_BASE_CLASS_DOCKING = 0x0a
 PCI_CLASS_DOCKING_GENERIC = 0x0a00
 PCI_CLASS_DOCKING_OTHER = 0x0a80
- 
+
 PCI_BASE_CLASS_PROCESSOR = 0x0b
 PCI_CLASS_PROCESSOR_386 = 0x0b00
 PCI_CLASS_PROCESSOR_486 = 0x0b01
@@ -1109,7 +1109,7 @@ PCI_CLASS_PROCESSOR_ALPHA = 0x0b10
 PCI_CLASS_PROCESSOR_POWERPC = 0x0b20
 PCI_CLASS_PROCESSOR_MIPS = 0x0b30
 PCI_CLASS_PROCESSOR_CO = 0x0b40
- 
+
 PCI_BASE_CLASS_SERIAL = 0x0c
 PCI_CLASS_SERIAL_FIREWIRE = 0x0c00
 PCI_CLASS_SERIAL_ACCESS = 0x0c01
@@ -1118,42 +1118,44 @@ PCI_CLASS_SERIAL_USB = 0x0c03
 PCI_CLASS_SERIAL_FIBER = 0x0c04
 PCI_CLASS_SERIAL_SMBUS = 0x0c05
 PCI_CLASS_SERIAL_INFINIBAND = 0x0c06
- 
+
 PCI_BASE_CLASS_WIRELESS = 0x0d
 PCI_CLASS_WIRELESS_IRDA = 0x0d00
 PCI_CLASS_WIRELESS_CONSUMER_IR = 0x0d01
 PCI_CLASS_WIRELESS_RF = 0x0d10
 PCI_CLASS_WIRELESS_OTHER = 0x0d80
- 
+
 PCI_BASE_CLASS_INTELLIGENT = 0x0e
 PCI_CLASS_INTELLIGENT_I2O = 0x0e00
- 
+
 PCI_BASE_CLASS_SATELLITE = 0x0f
 PCI_CLASS_SATELLITE_TV = 0x0f00
 PCI_CLASS_SATELLITE_AUDIO = 0x0f01
 PCI_CLASS_SATELLITE_VOICE = 0x0f03
 PCI_CLASS_SATELLITE_DATA = 0x0f04
- 
+
 PCI_BASE_CLASS_CRYPT = 0x10
 PCI_CLASS_CRYPT_NETWORK = 0x1000
 PCI_CLASS_CRYPT_ENTERTAINMENT = 0x1010
 PCI_CLASS_CRYPT_OTHER = 0x1080
- 
+
 PCI_BASE_CLASS_SIGNAL = 0x11
 PCI_CLASS_SIGNAL_DPIO = 0x1100
 PCI_CLASS_SIGNAL_PERF_CTR = 0x1101
 PCI_CLASS_SIGNAL_SYNCHRONIZER = 0x1110
 PCI_CLASS_SIGNAL_OTHER = 0x1180
- 
+
 PCI_CLASS_OTHERS = 0xff
- 
+
 """ = Several ID's we need in the library """
- 
+
 PCI_VENDOR_ID_INTEL = 0x8086
 PCI_VENDOR_ID_COMPAQ = 0x0e11
 
 
 #Not avilable on the linux/include/uapi/linux_reg.h
+
+PCI_EXT_CAPS_OFFSET = 0x100
 
 
 PCI_EXP_CURR_DEMPHASIS_LEVEL = 1

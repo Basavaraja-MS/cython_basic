@@ -879,6 +879,8 @@ PCI_AF_CTRL_FLR = 0x01
 PCI_AF_STATUS = 5
 PCI_AF_STATUS_TP = 0x01
 
+PCI_EXT_CAPS_OFFSET = 0x100
+
 # = Advanced Error Reporting #
 PCI_ERR_UNCOR_STATUS = 4 # Uncorrectable Error Status #
 PCI_ERR_UNC_TRAIN = 0x00000001 # Undefined in PCIe rev1.1 & 2.0 spec #

@@ -37,7 +37,8 @@ def pcipm_get_curr_power_stat_t(plib, rp_dev, ep_dev, rp_cap, ep_cap):
 
 def pcipm_set_power_stat_t(plib, ep_dev, ep_cap, pcipm):
     pmc_ctl = plib.read_word(ep_dev, ep_cap + PCI_PM_CTRL)
-    plib.write_word(ep_dev, ep_cap + PCI_PM_CTRL, (pmc_ctl & ~3) | pcipm)
+    pmc_ctl = (pmc_ctl & ~3) | pcipm
+    plib.write_word(ep_dev, ep_cap + PCI_PM_CTRL, pmc_ctl)
     logging.info("Current power state changed to :D%d", pmc_ctl & 3)
 
 def aspm_get_power_stat(plib, rp_dev, ep_dev, rp_cap, ep_cap):
@@ -86,7 +87,7 @@ def clear_link_equ(plib, ep_dev, ep_cap):
 def perform_link_equ(plib, rp_dev, rp_ext_cap):
     link_ctl3 = plib.read_word(rp_dev, rp_ext_cap + PCI_EXP_LNKCTL3)
     plib.write_word(rp_dev, rp_ext_cap + PCI_EXP_LNKCTL, link_ctl3 | PCI_EXP_PERFORM_EQU)
-    
+
 
 def check_equ_status(plib, ep_dev, ep_cap):
     link_stat2 = plib.read_word(ep_dev, ep_cap + PCI_EXP_LNKSTA2)
@@ -110,15 +111,19 @@ def check_equ_status(plib, ep_dev, ep_cap):
 def pci_link_equ_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict):
     logging.info("PCIe Link Equalization test")
     clear_link_equ(plib, ep_dev, ep_cap)
-    rp_ext_cap = find_pcie_cap(plib, rp_cap, PCIE_EXP_EXT_CAPS_ID)
+    logging.info("Clear linkEqu")
+    rp_ext_cap = find_pcie_ext_cap(plib, rp_cap, PCIE_EXP_EXT_CAPS_ID)
+    if (rp_ext_cap == 0):
+        logging.error("No extended capablity found")
     perform_link_equ(plib, rp_dev, rp_ext_cap)
     pci_link_retrain(plib, rp_dev, rp_cap)
     check_equ_status(plib, ep_dev, ep_cap)
+    logging.info("linkEqu status check Done")
     return 0
 
 
 def pci_check_retrain_completion(plib, rp_dev, rp_caps):
-    time.sleep(1) #TODO: Insted of sleeping continusly read for a 1 sec 
+    time.sleep(1) #TODO: Insted of sleeping continusly read for a 1 sec
     if check_link_retrain_complet(plib, rp_dev, rp_caps) == False: # Check is pci is still in retrain
         return True
     else:
@@ -139,9 +144,9 @@ def pci_link_retrain_test(plib, rp_dev, ep_dev, rp_caps, ep_caps, from_speed, to
     if ret is False:
         logging.error("Failed to move into Gen %d speed", to_speed)
         return False
-    
+
     ret = pci_link_retrain(plib, rp_dev, ep_dev, rp_caps, ep_caps, to_speed)
-    if ret is False:        
+    if ret is False:
         logging.error("Failed to move into Gen %d speed", to_speed)
         return False
 
@@ -149,7 +154,7 @@ def pci_link_retrain_test(plib, rp_dev, ep_dev, rp_caps, ep_caps, from_speed, to
         logging.error("Link failed after retrain test")
         return False
     return True
-    
+
 
 
 """
@@ -168,7 +173,7 @@ def pci_check_DLL_link_active(plib, rp_dev, rp_cap):
         if rp_lnk_stat & PCI_EXP_LNKSTA_DL_ACT:
             logging.info("DLL Link Active")
             return True
-        logging.info("DLL Link Failure")
+        logging.info("DLL Link Inavtive")
         return False
 
 
@@ -178,11 +183,27 @@ def pci_read_vendor_device_id(plib, ep_dev):
     logging.info("vendor id 0x%x device id 0x%x", vendor_id, device_id)
     return vendor_id, device_id
 
+def find_pcie_ext_cap(plib, dev, pci_ext_cap_id):
+    regval = 0
+    offset = PCI_EXT_CAPS_OFFSET
+    while offset != 0x0:
+        reagval = plib.read_long(dev, offset)
+        print("regval -", regval)
+        if ((regval & 0xFFFF) == pci_ext_cap_id):
+            break
+        offset = regval & 0xFFFF0000
+        offset = offset >> 20
+    return offset
+
 def find_pcie_cap(plib, dev, pci_cap_id):
     offset = plib.read_word(dev, PCI_CAPABILITY_LIST)
+    count = 0
     while offset != 0x0:
+        count = count + 1
+        if offset == 0x7F:
+            break
         regval = plib.read_word(dev, offset)
-        if (regval & 0xFF) == pci_cap_id:
+        if (regval & 0xFF) is pci_cap_id:
             break
         offset = regval & 0xFF00
         offset = offset >> 8
@@ -191,12 +212,9 @@ def find_pcie_cap(plib, dev, pci_cap_id):
 
 def check_device_status(plib, rp_dev, ep_dev, rp_cap, ep_cap, dev_test):
     if(dev_test["id"] == True):
-        vid, did = pci_read_vendor_device_id(plib, ep_dev) 
+        vid, did = pci_read_vendor_device_id(plib, ep_dev)
         if (vid == 0xFFFF and did == 0xFFFF):
-            logging.info("Check DID VID Failed")
-            return False
-        else:
-            print("vid - did pass", vid, did)
+            logging.error("Check DID VID Failed")
     if(dev_test["aer_chk"] == True):
         logging.info("Yet to impliment")
     if(dev_test["dll_active_chk"] == True):
@@ -204,21 +222,23 @@ def check_device_status(plib, rp_dev, ep_dev, rp_cap, ep_cap, dev_test):
             return False
     return True
 
-def pci_pm_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param):
+def pci_pm_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, rp_cap_pm, ep_cap_pm, test_param):
     logging.info("PCI Power Managment Test:")
     rp_d1, ep_d1, rp_d2, ep_d2 = pcipm_get_Dx_stat_t(plib,
                                     rp_dev, ep_dev, rp_cap, ep_cap)
-    pcipm_get_curr_power_stat_t(plib, rp_dev, ep_dev, rp_cap, ep_cap)
+    logging.info("RP - D1:%d D2:%d EP - D1:%d D2:%d", rp_d1, rp_d2, ep_d1, ep_d2 )
+    rp_pm_ctl, ep_pm_ctl = pcipm_get_curr_power_stat_t(plib, rp_dev, ep_dev, rp_cap_pm, ep_cap_pm)
     if (test_param["print_only"] == True):
         return
 
-    d1_test = test_param["d1"]
-    d2_test = test_param["d2"]
-    if (rp_d1 == ep_d1 == d1_test):
+    d1_test_usr = test_param["d1"]
+    d2_test_usr = test_param["d2"]
+    if (rp_d1 == ep_d1 == d1_test_usr == True):
         d1_test = True
     else:
         d1_test = False
-    if (ep_d2 == rp_d2 == d2_test):
+
+    if (ep_d2 == rp_d2 == d2_test_usr == True):
         d2_test = True
     else:
         d2_test = False
@@ -228,21 +248,20 @@ def pci_pm_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param):
     while (count):
         print("count -", count)
         new_pm = count%4 # Generats a number for set aspm
+        count = count - 1
         if(new_pm == 1 and d1_test == True):
-            pcipm_set_power_stat_t(plib, ep_dev, ep_cap, new_pm)
+            pcipm_set_power_stat_t(plib, ep_dev, ep_cap_pm, new_pm)
         elif(new_pm == 2 and d2_test == True):
-            pcipm_set_power_stat_t(plib, ep_dev, ep_cap, new_pm)
+            pcipm_set_power_stat_t(plib, ep_dev, ep_cap_pm, new_pm)
         elif(new_pm == 1 or new_pm == 2):
             continue
         else: #For D3hot and D0
-            pcipm_set_power_stat_t(plib, ep_dev, ep_cap, new_pm)
-
-        time.sleep(5)
+            pcipm_set_power_stat_t(plib, ep_dev, ep_cap_pm, new_pm)
+        time.sleep(1)
         ret = check_device_status(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param)
-        print("ret -", ret)
-        if ret == False:
+        if ret is False:
+            print("ret -", ret)
             return ret
-        count = count - 1
     pcipm_set_power_stat_t(plib, ep_dev, ep_cap, 0) #While exiting set to D0 state
 
 
@@ -314,20 +333,23 @@ def pci_link_disable_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
     count = test_param_dict["link_disable_test_count"]
     while (count):
         if rpctl & PCI_EXP_LNKCTL_DISABLE :
-            logging.info("Link is in Disabled state")
-            logging.info("Enable PCIe Link")
+            logging.info("Link is in Disabled state - Enable it")
             rpctl = rpctl & ~PCI_EXP_LNKCTL_DISABLE
             plib.write_word(rp_dev, rp_cap + PCI_EXP_LNKCTL, rpctl)
+            time.sleep(0.1)
             check_device_status(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
+            if pci_check_DLL_link_active(plib, rp_dev, rp_cap) is True:
+                logging.info("Link Successfully in Enabled state")
+            else:
+                logging.error("Failure while enterig Enabled state")
         else:
-            logging.info("Link is in Enabled state")
-            logging.info("Disable PCIe Link")
+            logging.info("Link is in Enabled state - Disable it")
             rpctl = rpctl | PCI_EXP_LNKCTL_DISABLE
             plib.write_word(rp_dev, rp_cap + PCI_EXP_LNKCTL, rpctl)
             if pci_check_DLL_link_active(plib, rp_dev, rp_cap) is False:
                 logging.info("Link Successfully in Disable state")
             else:
-                logging.error("Link Not entered to Disable state")
+                logging.error("Failure while enterig Disabled state")
         count = count -1
         time.sleep(1)
 
@@ -382,34 +404,47 @@ test_param_dict = {
     "link_disable_test_count":10
     }
 
+
+def link_equ():
+    plib = pci()
+    rp_dev = plib.get_device(0, 0, 2, 0)
+    ep_dev = plib.get_device(0, 3, 0, 0)
+    rp_cap = find_pcie_cap(plib, rp_dev, PCI_CAP_ID_EXP)
+    ep_cap = find_pcie_cap(plib, ep_dev, PCI_CAP_ID_EXP)
+    vendor_id, device_id = pci_read_vendor_device_id(plib, rp_dev)
+    logging.info("RP: %x- %x"  %(vendor_id, device_id))
+    pci_link_equ_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
+
+#link_equ()
+
 def pci_aspm():
     plib = pci()
     rp_dev = plib.get_device(0, 0, 2, 0)
-    ep_dev = plib.get_device(0, 1, 0, 0)
+    ep_dev = plib.get_device(0, 3, 0, 0)
     rp_cap = find_pcie_cap(plib, rp_dev, PCI_CAP_ID_EXP)
     ep_cap = find_pcie_cap(plib, ep_dev, PCI_CAP_ID_EXP)
     vendor_id, device_id = pci_read_vendor_device_id(plib, rp_dev)
     logging.info("RP: %x- %x"  %(vendor_id, device_id))
     pci_aspm_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
-
 #pci_aspm()
 def pcipm():
     plib = pci()
     rp_dev = plib.get_device(0, 0, 2, 0)
-    ep_dev = plib.get_device(0, 1, 0, 0)
+    ep_dev = plib.get_device(0, 3, 0, 0)
     rp_cap = find_pcie_cap(plib, rp_dev, PCI_CAP_ID_EXP)
     ep_cap = find_pcie_cap(plib, ep_dev, PCI_CAP_ID_EXP)
     vendor_id, device_id = pci_read_vendor_device_id(plib, rp_dev)
     logging.info("RP: %x- %x"  %(vendor_id, device_id))
     rp_pm_cap = find_pcie_cap(plib, rp_dev, PCI_CAP_ID_PM)
     ep_pm_cap = find_pcie_cap(plib, ep_dev, PCI_CAP_ID_PM)
-    pci_pm_test(plib, rp_dev, ep_dev, rp_pm_cap, ep_pm_cap, test_param_dict)
+    pci_pm_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, rp_pm_cap, ep_pm_cap, test_param_dict)
+
 #pcipm()
 
 def pcilinkretrain():
     plib = pci()
     rp_dev = plib.get_device(0, 0, 2, 0)
-    ep_dev = plib.get_device(0, 1, 0, 0)
+    ep_dev = plib.get_device(0, 3, 0, 0)
     rp_cap = find_pcie_cap(plib, rp_dev, PCI_CAP_ID_EXP)
     ep_cap = find_pcie_cap(plib, ep_dev, PCI_CAP_ID_EXP)
     vendor_id, device_id = pci_read_vendor_device_id(plib, rp_dev)
@@ -420,16 +455,218 @@ def pcilinkretrain():
 def pcilinkdisableenable():
     plib = pci()
     rp_dev = plib.get_device(0, 0, 2, 0)
-    ep_dev = plib.get_device(0, 5, 0, 0)
+    ep_dev = plib.get_device(0, 3, 0, 0)
     rp_cap = find_pcie_cap(plib, rp_dev, PCI_CAP_ID_EXP)
     ep_cap = find_pcie_cap(plib, ep_dev, PCI_CAP_ID_EXP)
     vendor_id, device_id = pci_read_vendor_device_id(plib, rp_dev)
     logging.info("RP: %x- %x"  %(vendor_id, device_id))
-    count = 10
     pci_link_disable_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
-    count = count -1 
 
-pcilinkdisableenable()
+#pcilinkdisableenable()
+
+pcie_cap_dict = {
+    1: {
+        PCI_CAP_LIST_ID:0,
+        PCI_CAP_ID_PM : 0,
+        PCI_CAP_ID_AGP: 0,
+        PCI_CAP_ID_VPD: 0,
+        PCI_CAP_ID_SLOTID : 0,
+        PCI_CAP_ID_MSI : 0,
+        PCI_CAP_ID_CHSWP : 0,
+        PCI_CAP_ID_PCIX : 0,
+        PCI_CAP_ID_HT : 0,
+        PCI_CAP_ID_VNDR : 0,
+        PCI_CAP_ID_DBG : 0,
+        PCI_CAP_ID_CCRC : 0,
+        PCI_CAP_ID_HOTPLUG : 0,
+        PCI_CAP_ID_SSVID : 0,
+        PCI_CAP_ID_AGP3 : 0,
+        PCI_CAP_ID_SECURE : 0,
+        PCI_CAP_ID_EXP : 0,
+        PCI_CAP_ID_MSIX : 0,
+        PCI_CAP_ID_SATA : 0,
+        PCI_CAP_ID_AF : 0,
+    },
+    2: {
+        PCI_CAP_LIST_ID:0,
+        PCI_CAP_ID_PM : 0,
+        PCI_CAP_ID_AGP: 0,
+        PCI_CAP_ID_VPD: 0,
+        PCI_CAP_ID_SLOTID : 0,
+        PCI_CAP_ID_MSI : 0,
+        PCI_CAP_ID_CHSWP : 0,
+        PCI_CAP_ID_PCIX : 0,
+        PCI_CAP_ID_HT : 0,
+        PCI_CAP_ID_VNDR : 0,
+        PCI_CAP_ID_DBG : 0,
+        PCI_CAP_ID_CCRC : 0,
+        PCI_CAP_ID_HOTPLUG : 0,
+        PCI_CAP_ID_SSVID : 0,
+        PCI_CAP_ID_AGP3 : 0,
+        PCI_CAP_ID_SECURE : 0,
+        PCI_CAP_ID_EXP : 0,
+        PCI_CAP_ID_MSIX : 0,
+        PCI_CAP_ID_SATA : 0,
+        PCI_CAP_ID_AF : 0,
+    },
+}
+
+
+
+pcie_ext_cap_dict = {
+    1: {
+        PCI_EXT_CAP_ID_AER : 0,
+        PCI_EXT_CAP_ID_VC : 0,
+        PCI_EXT_CAP_ID_DSN : 0,
+        PCI_EXT_CAP_ID_PB : 0,
+        PCI_EXT_CAP_ID_RCLINK : 0,
+        PCI_EXT_CAP_ID_RCILINK : 0,
+        PCI_EXT_CAP_ID_RCECOLL : 0,
+        PCI_EXT_CAP_ID_MFVC : 0,
+        PCI_EXT_CAP_ID_RBCB : 0,
+        PCI_EXT_CAP_ID_VNDR : 0,
+        PCI_EXT_CAP_ID_ACS : 0,
+        PCI_EXT_CAP_ID_ARI : 0,
+        PCI_EXT_CAP_ID_ATS : 0,
+        PCI_EXT_CAP_ID_SRIOV : 0,
+        PCIE_EXP_EXT_CAPS_ID: 0,
+    },
+    2: {
+        PCI_EXT_CAP_ID_AER : 0,
+        PCI_EXT_CAP_ID_VC : 0,
+        PCI_EXT_CAP_ID_DSN : 0,
+        PCI_EXT_CAP_ID_PB : 0,
+        PCI_EXT_CAP_ID_RCLINK : 0,
+        PCI_EXT_CAP_ID_RCILINK : 0,
+        PCI_EXT_CAP_ID_RCECOLL : 0,
+        PCI_EXT_CAP_ID_MFVC : 0,
+        PCI_EXT_CAP_ID_RBCB : 0,
+        PCI_EXT_CAP_ID_VNDR : 0,
+        PCI_EXT_CAP_ID_ACS : 0,
+        PCI_EXT_CAP_ID_ARI : 0,
+        PCI_EXT_CAP_ID_ATS : 0,
+        PCI_EXT_CAP_ID_SRIOV : 0,
+        PCIE_EXP_EXT_CAPS_ID: 0,
+    },
+}
+
+
+def find_and_store_pci_cap_offset(plib, dev):
+    offset = plib.read_word(dev, PCI_CAPABILITY_LIST)
+    while (offset != 0x0) and (offset != 0x7F):
+        pcie_cap = plib.read_word(dev, offset)
+        pcie_cap_index = pcie_cap & 0xFF
+        pcie_cap_dict[dev][pcie_cap_index] = offset
+        offset = pcie_cap & 0xFF00
+        offset = offset >> 8
+    for pcicap, pcioffset in pcie_cap_dict[dev].items():
+        print(pcicap, pcioffset)
+
+
+def find_and_store_pci_ext_cap_offset(plib, dev):
+    offset = PCI_EXT_CAPS_OFFSET
+    while (offset != 0x0):
+        pcie_ext_cap = plib.read_long(dev, offset)
+        print("ext cap ", hex(pcie_ext_cap))
+        pcie_ext_cap_index = pcie_ext_cap & 0xFFFF # TODO: Check for all f
+        pcie_ext_cap_dict[dev][pcie_ext_cap_index] = offset
+        offset = pcie_ext_cap & 0xFFFF0000
+        offset = offset >> 20
+    #Just for debug
+    for pcicap, pcioffset in pcie_ext_cap_dict[dev].items():
+        print(pcicap, hex(pcioffset))
+
+
+def get_pci_cap(dev, capid):
+     return pcie_cap_dict[dev][capid]
+
+def get_pci_ext_cap(dev, capid):
+     return pcie_ext_cap_dict[dev][capid]
+
+def initpci():
+    plib = pci()
+    rp_dev = plib.get_device(0, 0, 2, 0)
+    ep_dev = plib.get_device(0, 3, 0, 0)
+    find_and_store_pci_cap_offset(plib, rp_dev)
+    find_and_store_pci_cap_offset(plib, ep_dev)
+    find_and_store_pci_ext_cap_offset(plib, rp_dev)
+    find_and_store_pci_ext_cap_offset(plib, ep_dev)
+    return plib, rp_dev, ep_dev
+
+
+def pci_aer_enable_ecrc_check(plib, dev):
+    aer_offset = get_pci_ext_cap(dev, PCI_EXT_CAP_ID_AER)
+    reg32 = plib.read_long(dev, aer_offset + PCI_ERR_CAP)
+    if (reg32 & PCI_ERR_CAP_ECRC_GENC):
+        reg32 = reg32 | PCI_ERR_CAP_ECRC_GENE
+    if (reg32 & PCI_ERR_CAP_ECRC_CHKC):
+        reg32 = reg32 | PCI_ERR_CAP_ECRC_CHKE
+    plib.write_long(dev, aer_offset + PCI_ERR_CAP, reg32)
+
+
+def pci_aer_clear(plib, dev):
+    cap_offset = get_pci_cap(dev, PCI_CAP_ID_EXP)
+
+    aer_offset = get_pci_ext_cap(dev, PCI_EXT_CAP_ID_AER)
+    if (aer_offset == 0x0):
+        logging.info("AER Not supported")
+        return 0
+
+    reg16 = plib.read_word(dev, cap_offset + PCI_EXP_DEVSTA)
+    plib.write_word(dev, cap_offset + PCI_EXP_DEVSTA, reg16)
+
+    reg32 = plib.read_long(dev, aer_offset + PCI_ERR_ROOT_STATUS)
+    plib.write_long(dev, aer_offset + PCI_ERR_ROOT_STATUS, reg32)
+
+    reg32 = plib.read_long(dev, aer_offset + PCI_ERR_COR_STATUS)
+    plib.write_long(dev, aer_offset + PCI_ERR_COR_STATUS, reg32)
+
+    reg32 = plib.read_long(dev, aer_offset + PCI_ERR_UNCOR_STATUS)
+    plib.write_long(dev, aer_offset + PCI_ERR_UNCOR_STATUS, reg32)
+
+def pci_aer_read_all(plib, dev):
+    err_uncor_stat = plib.read_long(epdev, ep_aer_offset + PCI_ERR_UNCOR_STATUS)
+    err_uncor_stat_msk = plib.read_long(epdev, ep_aer_offset + PCI_ERR_UNCOR_MASK)
+    err_uncor_stat_sev = plib.read_long(epdev, ep_aer_offset + PCI_ERR_UNCOR_SEVER)
+
+    err_cor_stat = plib.read_long(epdev, ep_aer_offset + PCI_ERR_COR_STATUS)
+    err_cor_stat_msk = plib.read_long(epdev, ep_aer_offset + PCI_ERR_COR_MASK)
+
+
+
+def pci_aer_watch(plib, rpdev, epdev):
+    aer_offset = get_pci_ext_cap(rpdev, PCI_EXT_CAP_ID_AER)
+    aerstaus = plib.read_long(rpdev, aer_offset + PCI_ERR_ROOT_STATUS)
+    if !(aerstaus & (PCI_ERR_ROOT_COR_RCV | PCI_ERR_ROOT_UNCOR_RCV)):
+        return 0 #No error found
+    aer_soruce =  plib.read_long(rpdev, aer_offset + PCI_ERR_ROOT_ERR_SRC)
+    #clear as soon as posible
+    plib.write_long(rpdev, aer_offset + PCI_ERR_ROOT_STATUS, aerstaus)
+
+    if (aer_status & PCI_ERR_ROOT_UNCOR_RCV):
+        if (aer_status & PCI_ERR_ROOT_FATAL_RCV):
+            logging.info("Found Un Correcteble Fatel Error")
+        else:
+            logging.info("Found Un Currecteble Non Fatel Error")
+    if (aer_status & PCI_ERR_ROOT_COR_RCV):
+        logging.info("Found Correctebl Error")
+
+
+
+def pciaerinit():
+    plib, rpdev, epdev = initpci()
+    pci_aer_clear(plib, rpdev)
+    pci_aer_clear(plib, epdev)
+    pci_aer_enable_ecrc_check(plib, rpdev)
+    pci_aer_enable_ecrc_check(plib, epdev)
+    #TODO: Header Log holding
+
+    pci_aer_watch()
+
+
+
+
+
 
 """
 #test_param = dict{}

@@ -74,6 +74,7 @@ $(PCILIBPC): libpci.pc.in
 		-e 's,@IDSDIR@,$(IDSDIR),' \
 		-e 's,@VERSION@,$(VERSION),' \
 		-e 's,@LDLIBS@,$(LDLIBS),'
+	cp libpci.so.3.1.4 libpci.so
 
 init.o: init.c $(INCL)
 access.o: access.c $(INCL)

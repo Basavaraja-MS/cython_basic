@@ -54,7 +54,7 @@ PCIINC_INS=lib/config.h lib/header.h lib/pci.h lib/types.h
 export
 
 #all: lib/$(PCILIB) lspci setpci mylspci example lspci.8 setpci.8 pcilib.7 update-pciids update-pciids.8 $(PCI_IDS)
-all: lib/$(PCILIB) example
+all: lib/$(PCILIB) example changeso
 
 lib/$(PCILIB): $(PCIINC) force
 	$(MAKE) -C lib all
@@ -87,6 +87,8 @@ update-pciids: update-pciids.sh
 example: example.o lib/$(PCILIB)
 example.o: example.c $(PCIINC)
 
+changeso:
+	cp lib/libpci.so.3.1.4 lib/libpci.so
 # The example of use of libpci
 mylspci: mylspci.o lib/$(PCILIB)
 mylspci.o: mylspci.c $(PCIINC)
