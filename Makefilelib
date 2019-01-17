@@ -1,5 +1,4 @@
-# Makefile for The PCI Utilities
-# (c) 1998--2009 Martin Mares <mj@ucw.cz>
+# Makefile for The PCI LIB 
 
 OPT=-O2
 CFLAGS=$(OPT) -Wall -W -Wno-parentheses -Wstrict-prototypes -Wmissing-prototypes -g
@@ -84,8 +83,8 @@ update-pciids: update-pciids.sh
 	chmod +x $@
 
 # The example of use of libpci
-example: example.o lib/$(PCILIB)
-example.o: example.c $(PCIINC)
+example: learning/example.o lib/$(PCILIB)
+learning/example.o: learning/example.c $(PCIINC)
 
 changeso:
 	cp lib/libpci.so.3.1.4 lib/libpci.so

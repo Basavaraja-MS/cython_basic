@@ -3,7 +3,7 @@
 # its lib/header.h file
 # Replace /# #/ by # #
 # Replace = by awk '{$2="=" OFS $2} 1' file > file
-# comment macro functions by sed -e '/(x)/s/^/#/g' -i file
+### comment macro functions by sed -e '/(x)/s/^/#/g' -i file
 #
 
 
@@ -835,25 +835,25 @@ PCI_EXP_RTSTA_PME_STATUS = 0x00010000 # PME Status #
 PCI_EXP_RTSTA_PME_PENDING = 0x00020000 # PME is Pending #
 PCI_EXP_DEVCAP2 = 0x24 # Device capabilities 2 #
 PCI_EXP_DEVCTL2 = 0x28 # Device Control #
-#def PCI_EXP_DEV2_TIMEOUT_RANGE(x):
-#    return ((x) & 0xf) # Completion Timeout Ranges Supported #
-#def PCI_EXP_DEV2_TIMEOUT_VALUE(x):
-#    return ((x) & 0xf) # Completion Timeout Value #
+###def PCI_EXP_DEV2_TIMEOUT_RANGE(x):
+###    return ((x) & 0xf) # Completion Timeout Ranges Supported #
+###def PCI_EXP_DEV2_TIMEOUT_VALUE(x):
+###    return ((x) & 0xf) # Completion Timeout Value #
 PCI_EXP_DEV2_TIMEOUT_DIS = 0x0010 # Completion Timeout Disable Supported #
 PCI_EXP_DEV2_ARI = 0x0020 # ARI Forwarding #
 PCI_EXP_DEVSTA2 = 0x2a # Device Status #
 PCI_EXP_LNKCAP2 = 0x2c # Link Capabilities #
 PCI_EXP_LNKCTL2 = 0x30 # Link Control #
-#PCI_EXP_LNKCTL2_SPEED(x) = ((x) & 0xf) # Target Link Speed #
+###PCI_EXP_LNKCTL2_SPEED(x) = ((x) & 0xf) # Target Link Speed #
 PCI_EXP_LNKCTL2_CMPLNC = 0x0010 # Enter Compliance #
 PCI_EXP_LNKCTL2_SPEED_DIS = 0x0020 # Hardware Autonomous Speed Disable #
-#PCI_EXP_LNKCTL2_DEEMPHASIS(x) = (((x) >> 6) & 1) # Selectable De-emphasis #
-#PCI_EXP_LNKCTL2_MARGIN(x) = (((x) >> 7) & 7) # Transmit Margin #
+###PCI_EXP_LNKCTL2_DEEMPHASIS(x) = (((x) >> 6) & 1) # Selectable De-emphasis #
+###PCI_EXP_LNKCTL2_MARGIN(x) = (((x) >> 7) & 7) # Transmit Margin #
 PCI_EXP_LNKCTL2_MOD_CMPLNC = 0x0400 # Enter Modified Compliance #
 PCI_EXP_LNKCTL2_CMPLNC_SOS = 0x0800 # Compliance SOS #
-#PCI_EXP_LNKCTL2_COM_DEEMPHASIS(x) = (((x) >> 12) & 1) # Compliance De-emphasis #
+###PCI_EXP_LNKCTL2_COM_DEEMPHASIS(x) = (((x) >> 12) & 1) # Compliance De-emphasis #
 PCI_EXP_LNKSTA2 = 0x32 # Link Status #
-#PCI_EXP_LINKSTA2_DEEMPHASIS(x) = ((x) & 1) # Current De-emphasis Level #
+###PCI_EXP_LINKSTA2_DEEMPHASIS(x) = ((x) & 1) # Current De-emphasis Level #
 PCI_EXP_SLTCAP2 = 0x34 # Slot Capabilities #
 PCI_EXP_SLTCTL2 = 0x38 # Slot Control #
 PCI_EXP_SLTSTA2 = 0x3a # Slot Status #
@@ -910,7 +910,7 @@ PCI_ERR_COR_REP_ANFE = 0x00002000 # Advisory Non-Fatal Error #
 PCI_ERR_COR_MASK = 20 # Correctable Error Mask #
 # = Same bits as above #
 PCI_ERR_CAP = 24 # Advanced Error Capabilities #
-#PCI_ERR_CAP_FEP(x) = ((x) & 31) # First Error Pointer #
+###PCI_ERR_CAP_FEP(x) = ((x) & 31) # First Error Pointer #
 PCI_ERR_CAP_ECRC_GENC = 0x00000020 # ECRC Generation Capable #
 PCI_ERR_CAP_ECRC_GENE = 0x00000040 # ECRC Generation Enable #
 PCI_ERR_CAP_ECRC_CHKC = 0x00000080 # ECRC Check Capable #
@@ -933,14 +933,14 @@ PCI_VC_RES_STATUS = 26
 # = Power Budgeting #
 PCI_PWR_DSR = 4 # Data Select Register #
 PCI_PWR_DATA = 8 # Data Register #
-#PCI_PWR_DATA_BASE(x) = ((x) & 0xff) # Base Power #
-#PCI_PWR_DATA_SCALE(x) = (((x) >> 8) & 3) # Data Scale #
-#PCI_PWR_DATA_PM_SUB(x) = (((x) >> 10) & 7) # PM Sub State #
-#PCI_PWR_DATA_PM_STATE(x) = (((x) >> 13) & 3) # PM State #
-#PCI_PWR_DATA_TYPE(x) = (((x) >> 15) & 7) # Type #
-#PCI_PWR_DATA_RAIL(x) = (((x) >> 18) & 7) # Power Rail #
+###PCI_PWR_DATA_BASE(x) = ((x) & 0xff) # Base Power #
+###PCI_PWR_DATA_SCALE(x) = (((x) >> 8) & 3) # Data Scale #
+###PCI_PWR_DATA_PM_SUB(x) = (((x) >> 10) & 7) # PM Sub State #
+###PCI_PWR_DATA_PM_STATE(x) = (((x) >> 13) & 3) # PM State #
+###PCI_PWR_DATA_TYPE(x) = (((x) >> 15) & 7) # Type #
+###PCI_PWR_DATA_RAIL(x) = (((x) >> 18) & 7) # Power Rail #
 PCI_PWR_CAP = 12 # Capability #
-#PCI_PWR_CAP_BUDGET(x) = ((x) & 1) # Included in system budget #
+###PCI_PWR_CAP_BUDGET(x) = ((x) & 1) # Included in system budget #
 
 # = Access Control Services #
 PCI_ACS_CAP = 0x04 # ACS Capability Register #
@@ -951,7 +951,7 @@ PCI_ACS_CAP_CMPLT_RED = 0x0008 # ACS P2P Completion Redirect #
 PCI_ACS_CAP_FORWARD = 0x0010 # ACS Upstream Forwarding #
 PCI_ACS_CAP_EGRESS = 0x0020 # ACS P2P Egress Control #
 PCI_ACS_CAP_TRANS = 0x0040 # ACS Direct Translated P2P #
-#PCI_ACS_CAP_VECTOR(x) = (((x) >> 8) & 0xff) # Egress Control Vector Size #
+###PCI_ACS_CAP_VECTOR(x) = (((x) >> 8) & 0xff) # Egress Control Vector Size #
 PCI_ACS_CTRL = 0x06 # ACS Control Register #
 PCI_ACS_CTRL_VALID = 0x0001 # ACS Source Validation Enable #
 PCI_ACS_CTRL_BLOCK = 0x0002 # ACS Translation Blocking Enable #
@@ -966,23 +966,23 @@ PCI_ACS_EGRESS_CTRL = 0x08 # Egress Control Vector #
 PCI_ARI_CAP = 0x04 # ARI Capability Register #
 PCI_ARI_CAP_MFVC = 0x0001 # MFVC Function Groups Capability #
 PCI_ARI_CAP_ACS = 0x0002 # ACS Function Groups Capability #
-#PCI_ARI_CAP_NFN(x) = (((x) >> 8) & 0xff) # Next Function Number #
+###PCI_ARI_CAP_NFN(x) = (((x) >> 8) & 0xff) # Next Function Number #
 PCI_ARI_CTRL = 0x06 # ARI Control Register #
 PCI_ARI_CTRL_MFVC = 0x0001 # MFVC Function Groups Enable #
 PCI_ARI_CTRL_ACS = 0x0002 # ACS Function Groups Enable #
-#PCI_ARI_CTRL_FG(x) = (((x) >> 4) & 7) # Function Group #
+###PCI_ARI_CTRL_FG(x) = (((x) >> 4) & 7) # Function Group #
 
 # = Address Translation Service #
 PCI_ATS_CAP = 0x04 # ATS Capability Register #
-#PCI_ATS_CAP_IQD(x) = ((x) & 0x1f) # Invalidate Queue Depth #
+###PCI_ATS_CAP_IQD(x) = ((x) & 0x1f) # Invalidate Queue Depth #
 PCI_ATS_CTRL = 0x06 # ATS Control Register #
-#PCI_ATS_CTRL_STU(x) = ((x) & 0x1f) # Smallest Translation Unit #
+###PCI_ATS_CTRL_STU(x) = ((x) & 0x1f) # Smallest Translation Unit #
 PCI_ATS_CTRL_ENABLE = 0x8000 # ATS Enable #
 
 # = Single Root I/O Virtualization #
 PCI_IOV_CAP = 0x04 # SR-IOV Capability Register #
 PCI_IOV_CAP_VFM = 0x00000001 # VF Migration Capable #
-#PCI_IOV_CAP_IMN(x) = ((x) >> 21) # VF Migration Interrupt Message Number #
+###PCI_IOV_CAP_IMN(x) = ((x) >> 21) # VF Migration Interrupt Message Number #
 PCI_IOV_CTRL = 0x08 # SR-IOV Control Register #
 PCI_IOV_CTRL_VFE = 0x0001 # VF Enable #
 PCI_IOV_CTRL_VFME = 0x0002 # VF Migration Enable #
@@ -1003,10 +1003,10 @@ PCI_IOV_SYSPS = 0x20 # System Page Size #
 PCI_IOV_BAR_BASE = 0x24 # VF BAR0, VF BAR1, ... VF BAR5 #
 PCI_IOV_NUM_BAR = 6 # Number of VF BARs #
 PCI_IOV_MSAO = 0x3c # VF Migration State Array Offset #
-#def PCI_IOV_MSA_BIR(x):
-#    return ((x) & 7) # VF Migration State BIR #
-#def PCI_IOV_MSA_OFFSET(x):
-#    return ((x) & 0xfffffff8) # VF Migration State Offset #
+###def PCI_IOV_MSA_BIR(x):
+###    return ((x) & 7) # VF Migration State BIR #
+###def PCI_IOV_MSA_OFFSET(x):
+###    return ((x) & 0xfffffff8) # VF Migration State Offset #
 
 #
 # = The PCI interface treats multi-function devices as independent
@@ -1166,3 +1166,59 @@ PCI_EXP_EQU_PHASE_2_SUCC = 8
 PCI_EXP_EQU_PHASE_3_SUCC = 16
 PCI_EXP_EQU_REQUEST = 32
 PCI_EXP_PERFORM_EQU = 1
+
+#  Advanced Error Reporting  #
+PCI_ERR_UNCOR_STATUS	= 4	#  Uncorrectable Error Status  #
+PCI_ERR_UNC_UND	= 0x00000001	#  Undefined  #
+PCI_ERR_UNC_DLP	= 0x00000010	#  Data Link Protocol  #
+PCI_ERR_UNC_SURPDN	= 0x00000020	#  Surprise Down  #
+PCI_ERR_UNC_POISON_TLP	= 0x00001000	#  Poisoned TLP  #
+PCI_ERR_UNC_FCP	= 0x00002000	#  Flow Control Protocol  #
+PCI_ERR_UNC_COMP_TIME	= 0x00004000	#  Completion Timeout  #
+PCI_ERR_UNC_COMP_ABORT	= 0x00008000	#  Completer Abort  #
+PCI_ERR_UNC_UNX_COMP	= 0x00010000	#  Unexpected Completion  #
+PCI_ERR_UNC_RX_OVER	= 0x00020000	#  Receiver Overflow  #
+PCI_ERR_UNC_MALF_TLP	= 0x00040000	#  Malformed TLP  #
+PCI_ERR_UNC_ECRC	= 0x00080000	#  ECRC Error Status  #
+PCI_ERR_UNC_UNSUP	= 0x00100000	#  Unsupported Request  #
+PCI_ERR_UNC_ACSV	= 0x00200000	#  ACS Violation  #
+PCI_ERR_UNC_INTN	= 0x00400000	#  internal error  #
+PCI_ERR_UNC_MCBTLP	= 0x00800000	#  MC blocked TLP  #
+PCI_ERR_UNC_ATOMEG	= 0x01000000	#  Atomic egress blocked  #
+PCI_ERR_UNC_TLPPRE	= 0x02000000	#  TLP prefix blocked  #
+PCI_ERR_UNCOR_MASK	= 8	#  Uncorrectable Error Mask  #
+	#  Same bits as above  #
+PCI_ERR_UNCOR_SEVER	= 12	#  Uncorrectable Error Severity  #
+	#  Same bits as above  #
+PCI_ERR_COR_STATUS	= 16	#  Correctable Error Status  #
+PCI_ERR_COR_RCVR	= 0x00000001	#  Receiver Error Status  #
+PCI_ERR_COR_BAD_TLP	= 0x00000040	#  Bad TLP Status  #
+PCI_ERR_COR_BAD_DLLP	= 0x00000080	#  Bad DLLP Status  #
+PCI_ERR_COR_REP_ROLL	= 0x00000100	#  REPLAY_NUM Rollover  #
+PCI_ERR_COR_REP_TIMER	= 0x00001000	#  Replay Timer Timeout  #
+PCI_ERR_COR_ADV_NFAT	= 0x00002000	#  Advisory Non-Fatal  #
+PCI_ERR_COR_INTERNAL	= 0x00004000	#  Corrected Internal  #
+PCI_ERR_COR_LOG_OVER	= 0x00008000	#  Header Log Overflow  #
+PCI_ERR_COR_MASK	= 20	#  Correctable Error Mask  #
+	#  Same bits as above  #
+PCI_ERR_CAP	=	24	#  Advanced Error Capabilities  #
+##PCI_ERR_CAP_FEP(x)	((x) & 31)	#  First Error Pointer  #
+PCI_ERR_CAP_ECRC_GENC	= 0x00000020	#  ECRC Generation Capable  #
+PCI_ERR_CAP_ECRC_GENE	 = 0x00000040	#  ECRC Generation Enable  #
+PCI_ERR_CAP_ECRC_CHKC	 = 0x00000080	#  ECRC Check Capable  #
+PCI_ERR_CAP_ECRC_CHKE	 = 0x00000100	#  ECRC Check Enable  #
+PCI_ERR_HEADER_LOG	= 28	#  Header Log Register (16 bytes)  #
+PCI_ERR_ROOT_COMMAND	= 44	#  Root Error Command  #
+PCI_ERR_ROOT_CMD_COR_EN		 = 0x00000001 #  Correctable Err Reporting Enable  #
+PCI_ERR_ROOT_CMD_NONFATAL_EN	 = 0x00000002 #  Non-Fatal Err Reporting Enable  #
+PCI_ERR_ROOT_CMD_FATAL_EN	 = 0x00000004 #  Fatal Err Reporting Enable  #
+PCI_ERR_ROOT_STATUS	= 48
+PCI_ERR_ROOT_COR_RCV		 = 0x00000001 #  ERR_COR Received  #
+PCI_ERR_ROOT_MULTI_COR_RCV	 = 0x00000002 #  Multiple ERR_COR  #
+PCI_ERR_ROOT_UNCOR_RCV		 = 0x00000004 #  ERR_FATAL#NONFATAL  #
+PCI_ERR_ROOT_MULTI_UNCOR_RCV	 = 0x00000008 #  Multiple FATAL#NONFATAL  #
+PCI_ERR_ROOT_FIRST_FATAL	 = 0x00000010 #  First UNC is Fatal  #
+PCI_ERR_ROOT_NONFATAL_RCV	 = 0x00000020 #  Non-Fatal Received  #
+PCI_ERR_ROOT_FATAL_RCV		 = 0x00000040 #  Fatal Received  #
+PCI_ERR_ROOT_AER_IRQ		 = 0xf8000000 #  Advanced Error Interrupt Message Number  #
+PCI_ERR_ROOT_ERR_SRC	= 52	#  Error Source Identification  #

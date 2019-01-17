@@ -1,6 +1,9 @@
 cimport pcipy_h
 from libc.stdint cimport *
 
+RP = 1
+EP = 2
+
 cdef class pci:
     cdef pcipy_h.pci_access *pacc
     cdef pcipy_h.pci_dev *cdev
@@ -34,82 +37,82 @@ cdef class pci:
 
     #TODO Need to truncate reg value to respective numbers
     def read_byte(self, dev, reg):
-        if dev == 1:
+        if dev == RP:
             cdev = self.rp_dev
             c = pcipy_h.pci_read_byte(cdev, reg)
-        elif dev == 2:
+        elif dev == EP:
             cdev = self.ep_dev
             c = pcipy_h.pci_read_byte(cdev, reg)
         return c
 
     def read_word(self, dev, reg):
-        if dev == 1:
+        if dev == RP:
             cdev = self.rp_dev
             c = pcipy_h.pci_read_word(cdev, reg)
-        elif dev == 2:
+        elif dev == EP:
             cdev = self.ep_dev
             c = pcipy_h.pci_read_word(cdev, reg)
         return c
 
     def read_long(self, dev, reg):
-        if dev == 1:
+        if dev == RP:
             cdev = self.rp_dev
             c = pcipy_h.pci_read_long(cdev, reg)
-        elif dev == 2:
+        elif dev == EP:
             cdev = self.ep_dev
             c = pcipy_h.pci_read_long(cdev, reg)
         return c
 
     def read_block(self, dev, pos, buf, len):
-        if dev == 1:
+        if dev == RP:
             cdev = self.rp_dev
             c = pcipy_h.pci_read_block(cdev, pos, buf, len)
-        elif dev == 2:
+        elif dev == EP:
             cdev = self.ep_dev
             c = pcipy_h.pci_read_block(cdev, pos, buf, len)
         return c
 
     def read_vpd(self, dev, pos, buf, len):
-        if dev == 1:
+        if dev == RP:
             cdev = self.rp_dev
             c = pcipy_h.pci_read_vpd(cdev, pos, buf, len)
-        elif dev == 2:
+        elif dev == EP:
             cdev = self.ep_dev
             c = pcipy_h.pci_read_vpd(cdev, pos, buf, len)
         return c
 
     def write_byte(self, dev, pos, data):
-        if dev == 1:
+        if dev == RP:
             cdev = self.rp_dev
             c = pcipy_h.pci_write_byte(cdev, pos, data)
-        elif dev == 2:
+        elif dev == EP:
             cdev = self.ep_dev
             c = pcipy_h.pci_write_byte(cdev, pos, data)
         return c
 
     def write_word(self, dev, pos, data):
-        if dev == 1:
+        if dev == RP:
             cdev = self.rp_dev
             c = pcipy_h.pci_write_word(cdev, pos, data)
-        elif dev == 2:
+        elif dev == EP:
             cdev = self.ep_dev
             c = pcipy_h.pci_write_word(cdev, pos, data)
         return c
 
     def write_long(self, dev, pos, data):
-        if dev == 1:
+        if dev == RP:
             cdev = self.rp_dev
             c = pcipy_h.pci_write_long(cdev, pos, data)
-        if dev == 2:
+        if dev == EP:
             cdev = self.ep_dev
             c = pcipy_h.pci_write_long(cdev, pos, data)
         return c
 
     def write_block(self, dev, pos, buf, len):
-        if dev == 1:
+        if dev == RP:
             cdev = self.rp_dev
             c = pcipy_h.pci_write_block(cdev, pos, buf, len)
-        elif dev == 2:
+        elif dev == EP:
             cdev = self.ep_dev
             c = pcipy_h.pci_write_block(cdev, pos, buf, len)
         return c

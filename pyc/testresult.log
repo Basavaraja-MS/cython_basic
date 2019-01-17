@@ -1,0 +1,188 @@
+ 2019-01-16 03:57:58,078 - root - INFO - Test: pci power managment test
+ 2019-01-16 03:57:58,079 - root - INFO - Test Count: 12
+ 2019-01-16 03:57:58,079 - root - INFO - AER Enable: True
+ 2019-01-16 03:57:58,079 - root - INFO - Logging Leve: error
+ 2019-01-16 03:57:58,079 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 04:50:19,727 - root - INFO - RP BUS:1 DEV:2 FUN :3
+ 2019-01-16 04:50:19,727 - root - INFO - EP BUS:4 DEV:5 FUN :6
+ 2019-01-16 04:50:19,727 - root - INFO - Test Name: aspm test
+ 2019-01-16 04:50:19,728 - root - INFO - Test Count: 122
+ 2019-01-16 04:50:19,728 - root - INFO - AER Enable: True
+ 2019-01-16 04:50:19,728 - root - INFO - Logging Leve: warning
+ 2019-01-16 04:50:19,729 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 04:50:51,031 - root - INFO - RP BUS:21 DEV:12 FUN :12
+ 2019-01-16 04:50:51,031 - root - INFO - EP BUS:21 DEV:4 FUN :21
+ 2019-01-16 04:50:51,032 - root - INFO - Test Name: aspm test
+ 2019-01-16 04:50:51,032 - root - INFO - Test Count: 12
+ 2019-01-16 04:50:51,032 - root - INFO - AER Enable: True
+ 2019-01-16 04:50:51,032 - root - INFO - Logging Leve: warning
+ 2019-01-16 04:50:51,033 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 04:51:36,764 - root - INFO - RP BUS:12 DEV:12 FUN :12
+ 2019-01-16 04:51:36,764 - root - INFO - EP BUS:12 DEV:12 FUN :12
+ 2019-01-16 04:51:36,764 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 04:51:36,764 - root - INFO - Test Count: 21
+ 2019-01-16 04:51:36,764 - root - INFO - AER Enable: True
+ 2019-01-16 04:51:36,764 - root - INFO - Logging Leve: warning
+ 2019-01-16 04:51:36,765 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 04:51:36,765 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:00:47,479 - root - INFO - RP BUS:0 DEV:1 FUN :1
+ 2019-01-16 05:00:47,479 - root - INFO - EP BUS:2 DEV:0 FUN :0
+ 2019-01-16 05:00:47,479 - root - INFO - Test Name: link equ test
+ 2019-01-16 05:00:47,480 - root - INFO - Test Count: 10
+ 2019-01-16 05:00:47,480 - root - INFO - AER Enable: True
+ 2019-01-16 05:00:47,480 - root - INFO - Logging Leve: error
+ 2019-01-16 05:00:47,480 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:00:47,480 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:00:47,488 - root - DEBUG - ofset found: 0x90
+ 2019-01-16 05:00:47,488 - root - DEBUG - ofset found: 0xa0
+ 2019-01-16 05:00:47,489 - root - DEBUG - ofset found: 0xe0
+ 2019-01-16 05:00:47,489 - root - DEBUG - ofset found: 0x50
+ 2019-01-16 05:00:47,489 - root - INFO - vendor id 0x8086 device id 0x3c03
+ 2019-01-16 05:00:47,489 - root - INFO - RP: 8086- 3c03
+ 2019-01-16 05:02:34,270 - root - INFO - RP BUS:0 DEV:1 FUN :1
+ 2019-01-16 05:02:34,270 - root - INFO - EP BUS:2 DEV:0 FUN :0
+ 2019-01-16 05:02:34,270 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:02:34,271 - root - INFO - Test Count: 5
+ 2019-01-16 05:02:34,271 - root - INFO - AER Enable: True
+ 2019-01-16 05:02:34,271 - root - INFO - Logging Leve: error
+ 2019-01-16 05:02:34,271 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:02:34,271 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:02:34,280 - root - DEBUG - ofset found: 0x90
+ 2019-01-16 05:02:34,280 - root - DEBUG - ofset found: 0xa0
+ 2019-01-16 05:02:34,280 - root - DEBUG - ofset found: 0xe0
+ 2019-01-16 05:02:34,280 - root - DEBUG - ofset found: 0x50
+ 2019-01-16 05:02:34,281 - root - INFO - vendor id 0x8086 device id 0x3c03
+ 2019-01-16 05:02:34,281 - root - INFO - RP: 8086- 3c03
+ 2019-01-16 05:04:38,295 - root - INFO - RP BUS:0 DEV:1 FUN :1
+ 2019-01-16 05:04:38,295 - root - INFO - EP BUS:2 DEV:0 FUN :0
+ 2019-01-16 05:04:38,295 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:04:38,295 - root - INFO - Test Count: 5
+ 2019-01-16 05:04:38,296 - root - INFO - AER Enable: True
+ 2019-01-16 05:04:38,296 - root - INFO - Logging Leve: warning
+ 2019-01-16 05:04:38,296 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:04:38,296 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:05:01,939 - root - INFO - RP BUS:0 DEV:1 FUN :1
+ 2019-01-16 05:05:01,939 - root - INFO - EP BUS:2 DEV:0 FUN :0
+ 2019-01-16 05:05:01,940 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:05:01,940 - root - INFO - Test Count: 5
+ 2019-01-16 05:05:01,940 - root - INFO - AER Enable: True
+ 2019-01-16 05:05:01,941 - root - INFO - Logging Leve: error
+ 2019-01-16 05:05:01,941 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:05:01,941 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:05:01,949 - root - DEBUG - ofset found: 0x90
+ 2019-01-16 05:05:01,949 - root - DEBUG - ofset found: 0xa0
+ 2019-01-16 05:05:01,949 - root - DEBUG - ofset found: 0xe0
+ 2019-01-16 05:05:01,949 - root - DEBUG - ofset found: 0x50
+ 2019-01-16 05:05:01,949 - root - INFO - vendor id 0x8086 device id 0x3c03
+ 2019-01-16 05:05:01,950 - root - INFO - RP: 8086- 3c03
+ 2019-01-16 05:07:33,712 - root - INFO - RP BUS:0 DEV:1 FUN :1
+ 2019-01-16 05:07:33,712 - root - INFO - EP BUS:2 DEV:0 FUN :0
+ 2019-01-16 05:07:33,713 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:07:33,713 - root - INFO - Test Count: 12
+ 2019-01-16 05:07:33,713 - root - INFO - AER Enable: True
+ 2019-01-16 05:07:33,713 - root - INFO - Logging Leve: error
+ 2019-01-16 05:07:33,714 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:07:33,714 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:07:33,721 - root - DEBUG - ofset found: 0x90
+ 2019-01-16 05:07:33,721 - root - DEBUG - ofset found: 0xa0
+ 2019-01-16 05:07:33,721 - root - DEBUG - ofset found: 0xe0
+ 2019-01-16 05:07:33,722 - root - DEBUG - ofset found: 0x50
+ 2019-01-16 05:07:33,722 - root - INFO - vendor id 0x8086 device id 0x3c03
+ 2019-01-16 05:07:33,722 - root - INFO - RP: 8086- 3c03
+ 2019-01-16 05:07:33,722 - root - INFO - vendor id 0x1033 device id 0x194
+ 2019-01-16 05:07:33,722 - root - INFO - EP: 1033- 194
+ 2019-01-16 05:09:19,813 - root - INFO - RP BUS:0 DEV:1 FUN :1
+ 2019-01-16 05:09:19,813 - root - INFO - EP BUS:2 DEV:0 FUN :0
+ 2019-01-16 05:09:19,813 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:09:19,814 - root - INFO - Test Count: 4
+ 2019-01-16 05:09:19,814 - root - INFO - AER Enable: True
+ 2019-01-16 05:09:19,814 - root - INFO - Logging Leve: error
+ 2019-01-16 05:09:19,814 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:09:19,814 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:09:19,820 - root - DEBUG - ofset found: 0x90
+ 2019-01-16 05:09:19,821 - root - DEBUG - ofset found: 0xa0
+ 2019-01-16 05:09:19,821 - root - DEBUG - ofset found: 0xe0
+ 2019-01-16 05:09:19,821 - root - DEBUG - ofset found: 0x50
+ 2019-01-16 05:09:19,821 - root - INFO - vendor id 0x8086 device id 0x3c03
+ 2019-01-16 05:09:19,821 - root - INFO - RP: 8086- 3c03
+ 2019-01-16 05:09:19,821 - root - INFO - vendor id 0x1033 device id 0x194
+ 2019-01-16 05:09:19,821 - root - INFO - EP: 1033- 194
+ 2019-01-16 05:10:05,691 - root - INFO - RP BUS:0 DEV:1 FUN :1
+ 2019-01-16 05:10:05,691 - root - INFO - EP BUS:2 DEV:0 FUN :0
+ 2019-01-16 05:10:05,691 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:10:05,691 - root - INFO - Test Count: 12
+ 2019-01-16 05:10:05,692 - root - INFO - AER Enable: True
+ 2019-01-16 05:10:05,692 - root - INFO - Logging Leve: error
+ 2019-01-16 05:10:05,692 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:10:05,692 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:10:05,698 - root - DEBUG - ofset found: 0x90
+ 2019-01-16 05:10:05,698 - root - DEBUG - ofset found: 0xa0
+ 2019-01-16 05:10:05,698 - root - DEBUG - ofset found: 0xe0
+ 2019-01-16 05:10:05,698 - root - DEBUG - ofset found: 0x50
+ 2019-01-16 05:10:05,698 - root - INFO - vendor id 0x8086 device id 0x3c03
+ 2019-01-16 05:10:05,698 - root - INFO - RP: 8086- 3c03
+ 2019-01-16 05:10:05,698 - root - INFO - vendor id 0x1033 device id 0x194
+ 2019-01-16 05:10:05,698 - root - INFO - EP: 1033- 194
+ 2019-01-16 05:10:46,449 - root - INFO - RP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:10:46,449 - root - INFO - EP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:10:46,449 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:10:46,449 - root - INFO - Test Count: 12
+ 2019-01-16 05:10:46,449 - root - INFO - AER Enable: True
+ 2019-01-16 05:10:46,450 - root - INFO - Logging Leve: error
+ 2019-01-16 05:10:46,450 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:10:46,450 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:11:07,747 - root - INFO - RP BUS:1 DEV:1 FUN :11
+ 2019-01-16 05:11:07,748 - root - INFO - EP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:11:07,748 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:11:07,748 - root - INFO - Test Count: 12
+ 2019-01-16 05:11:07,748 - root - INFO - AER Enable: True
+ 2019-01-16 05:11:07,748 - root - INFO - Logging Leve: error
+ 2019-01-16 05:11:07,748 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:11:07,748 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:20:39,780 - root - INFO - RP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:20:39,780 - root - INFO - EP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:20:39,780 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:20:39,781 - root - INFO - Test Count: 2
+ 2019-01-16 05:20:39,781 - root - INFO - AER Enable: True
+ 2019-01-16 05:20:39,781 - root - INFO - Logging Leve: error
+ 2019-01-16 05:20:39,781 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:21:09,852 - root - INFO - RP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:21:09,852 - root - INFO - EP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:21:09,852 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:21:09,853 - root - INFO - Test Count: 1
+ 2019-01-16 05:21:09,853 - root - INFO - AER Enable: True
+ 2019-01-16 05:21:09,853 - root - INFO - Logging Leve: error
+ 2019-01-16 05:21:09,853 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:21:09,854 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:21:55,202 - root - INFO - RP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:21:55,202 - root - INFO - EP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:21:55,203 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:21:55,203 - root - INFO - Test Count: 1
+ 2019-01-16 05:21:55,203 - root - INFO - AER Enable: True
+ 2019-01-16 05:21:55,204 - root - INFO - Logging Leve: error
+ 2019-01-16 05:21:55,204 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:21:55,205 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:22:45,129 - root - INFO - RP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:22:45,130 - root - INFO - EP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:22:45,130 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:22:45,130 - root - INFO - Test Count: 12
+ 2019-01-16 05:22:45,131 - root - INFO - AER Enable: True
+ 2019-01-16 05:22:45,131 - root - INFO - Logging Leve: error
+ 2019-01-16 05:22:45,131 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:22:45,132 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:23:22,965 - root - INFO - RP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:23:22,965 - root - INFO - EP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:23:22,965 - root - INFO - Test Name: pci power managment test
+ 2019-01-16 05:23:22,965 - root - INFO - Test Count: 21
+ 2019-01-16 05:23:22,966 - root - INFO - AER Enable: True
+ 2019-01-16 05:23:22,966 - root - INFO - Logging Leve: error
+ 2019-01-16 05:23:22,966 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:23:22,968 - root - INFO - Cadence PCIe Application level stress test
+ 2019-01-16 05:24:21,132 - root - INFO - RP BUS:1 DEV:11 FUN :1
+ 2019-01-16 05:24:21,132 - root - INFO - EP BUS:1 DEV:1 FUN :1
+ 2019-01-16 05:24:21,132 - root - INFO - Test Name: PCI power managment test
+ 2019-01-16 05:24:21,132 - root - INFO - Test Count: 21
+ 2019-01-16 05:24:21,132 - root - INFO - AER Enable: True
+ 2019-01-16 05:24:21,133 - root - INFO - Logging Leve: error
+ 2019-01-16 05:24:21,133 - root - INFO - Logging File: testlog.txt
+ 2019-01-16 05:24:21,133 - root - INFO - Cadence PCIe Application level stress test

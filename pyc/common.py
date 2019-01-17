@@ -374,7 +374,11 @@ def main_test_fun(test_param_dict):
     ep_pm_cap = find_pcie_cap(plib, ep_dev, PCI_CAP_ID_PM)
     vendor_id, device_id = pci_read_vendor_device_id(plib, rp_dev)
     logging.info("RP: %x- %x"  %(vendor_id, device_id))
+    vendor_id, device_id = pci_read_vendor_device_id(plib, ep_dev)
+    logging.info("EP: %x- %x"  %(vendor_id, device_id))
+    print(test_param_dict["pcipm_test"])
     if (test_param_dict["pcipm_test"] == True):
+        print("Its here")
         pci_pm_test(plib, rp_dev, ep_dev, rp_pm_cap, ep_pm_cap, test_param_dict)
     if (test_param_dict["aspm_test"] == True):
         pci_aspm_test(plib, rp_dev, ep_dev, rp_cap, ep_cap, test_param_dict)
@@ -594,6 +598,54 @@ def initpci():
     return plib, rp_dev, ep_dev
 
 
+aer_uncor_err_str = (
+	"Undefined",
+	None,
+	None,
+	None,
+	"DLP",
+	"SDES",
+	None,
+	None,
+	None,
+	None,
+	None,
+	None,
+	"TLP",
+	"FCP",
+	"CmpltTO",
+	"CmpltAbrt",
+	"UnxCmplt",
+	"RxOF",
+	"MalfTLP",
+	"ECRC",
+	"UnsupReq",
+	"ACSViol",
+	"UncorrIntErr",
+	"BlockedTLP",
+	"AtomicOpBlocked",
+	"TLPBlockedErr",
+        )
+
+aer_cor_err_str = (
+        "RxErr",
+	None,
+	None,
+	None,
+	None,
+	None,
+	"BadTLP",
+	"BadDLLP",
+	"Rollover",
+	None,
+	None,
+	None,
+	"Timeout",
+	"NonFatalErr",
+	"CorrIntErr",
+	"HeaderOF",
+)
+
 def pci_aer_enable_ecrc_check(plib, dev):
     aer_offset = get_pci_ext_cap(dev, PCI_EXT_CAP_ID_AER)
     reg32 = plib.read_long(dev, aer_offset + PCI_ERR_CAP)
@@ -632,12 +684,33 @@ def pci_aer_read_all(plib, dev):
     err_cor_stat = plib.read_long(epdev, ep_aer_offset + PCI_ERR_COR_STATUS)
     err_cor_stat_msk = plib.read_long(epdev, ep_aer_offset + PCI_ERR_COR_MASK)
 
+    while(err_uncor_stat):
+        for i in range(32):
+            err_uncor_stat >>= i
+            err_uncor_stat_msk >>= i
+            err_uncor_stat_sev >>= i
+            if ((err_uncor_stat & 1 ) and ((err_uncor_stat_msk & 1) != 1)):
+                if(err_uncor_stat_sev & 1):
+                    print("Fatal")
+                else:
+                    print("Non-Fatal")
+                print("UnCorrErr:", aer_uncor_err_str(i))
+
+    while (err_cor_stat):
+        for i in range(32):
+            err_cor_stat >>= i
+            err_cor_stat_mask >>= i
+            if ((err_cor_stat & 1) and ((err_cor_stat_mask & 1) != 1)):
+                print("CorrErr", aer_cor_err_str(i))
+
+
+
 
 
 def pci_aer_watch(plib, rpdev, epdev):
     aer_offset = get_pci_ext_cap(rpdev, PCI_EXT_CAP_ID_AER)
     aerstaus = plib.read_long(rpdev, aer_offset + PCI_ERR_ROOT_STATUS)
-    if !(aerstaus & (PCI_ERR_ROOT_COR_RCV | PCI_ERR_ROOT_UNCOR_RCV)):
+    if (aerstaus & (PCI_ERR_ROOT_COR_RCV | PCI_ERR_ROOT_UNCOR_RCV)) == 0:
         return 0 #No error found
     aer_soruce =  plib.read_long(rpdev, aer_offset + PCI_ERR_ROOT_ERR_SRC)
     #clear as soon as posible
@@ -661,12 +734,9 @@ def pciaerinit():
     pci_aer_enable_ecrc_check(plib, epdev)
     #TODO: Header Log holding
 
-    pci_aer_watch()
+    pci_aer_watch(plib, rpdev, epdev)
 
-
-
-
-
+#pciaerinit()
 
 """
 #test_param = dict{}
