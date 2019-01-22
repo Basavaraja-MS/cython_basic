@@ -14,14 +14,16 @@ class NumberValidator(Validator):
                  message='Please enter a number',
                  cursor_position=len(document.text))  # Move cursor to end
 
-
+"""
 questions = [
      {
           'type': 'input',
           'name': 'rpbus',
           'message': 'Enter RP bus number:',
           'validate': NumberValidator,
-          'filter': lambda val: int(val)
+          'filter': lambda val: int(val),
+          'default': '0'
+
       },
 
      {
@@ -103,54 +105,179 @@ questions = [
 
 
 ]
+"""
+
+questions = [
+     {
+          'type': 'input',
+          'name': 'rpbus',
+          'message': 'Enter RP bus number:',
+          'validate': NumberValidator,
+          'filter': lambda val: int(val),
+          'default': '0'
+      },
+
+     {
+          'type': 'input',
+          'name': 'rpdev',
+          'message': 'Enter RP device number:',
+          'validate': NumberValidator,
+          'filter': lambda val: int(val),
+          'default': '1'
+      },
+     {
+          'type': 'input',
+          'name': 'rpfun',
+          'message': 'Enter RP function number:',
+          'validate': NumberValidator,
+          'filter': lambda val: int(val),
+          'default': '1'
+      },
+     {
+          'type': 'input',
+          'name': 'epbus',
+          'message': 'Enter EP bus number:',
+          'validate': NumberValidator,
+          'filter': lambda val: int(val),
+          'default': '2'
+      },
+     {
+          'type': 'input',
+          'name': 'epdev',
+          'message': 'Enter EP dev number:',
+          'validate': NumberValidator,
+          'filter': lambda val: int(val),
+          'default': '0'
+      },
+     {
+          'type': 'input',
+          'name': 'epfun',
+          'message': 'Enter EP function number:',
+          'validate': NumberValidator,
+          'filter': lambda val: int(val),
+          'default': '0'
+      },
+    {
+        'type': 'list',
+        'name': 'testname',
+        'message': 'Select test:',
+        'choices': ['All',
+                    'PCI power managment test',
+                    'ASPM test',
+                    'Link Equ test',
+                    'Link Retrain test',
+                    'Link Disable/Enable test',
+                    'Link Speed test'
+                    ],
+
+    },
+    {
+         'type': 'input',
+         'name': 'testcount',
+         'message': 'Enter test iteration count:',
+         'validate': NumberValidator,
+         'filter': lambda val: int(val),
+         'default': '10'
+     },
+     {
+         'type': 'confirm',
+         'name': 'aer',
+         'message': 'Enable AER?',
+         'default': False
+     },
+     {
+         'type': 'list',
+         'name': 'loglevel',
+         'message': 'Log Level',
+         'choices': ['Error', 'Warning', 'Info', 'Debug'],
+         'filter': lambda val: val.lower()
+     },
+
+
+     {
+         'type': 'input',
+         'name': 'debugfile',
+         'message': 'Log file name',
+         'default': 'testlog.txt'
+     },
+
+
+]
 
 def ispcipmtest(answer):
     answer1 = 'PCI power managment test'
-    print(SequenceMatcher(None, answer, answer1).ratio())
     if SequenceMatcher(None, answer, answer1).ratio() == 1.0:
-        print(answer)
-        print("Why ")
         return True
     return False
 
 def isaspmtest(answer):
     answer1 = 'ASPM test'
-    if SequenceMatcher(None, answer, answer1).ratio() is 1.0:
+    if SequenceMatcher(None, answer, answer1).ratio() == 1.0:
         return True
     return False
 
 def islinkrettest(answer):
     answer1 = 'Link Retrain test'
-    if SequenceMatcher(None, answer, answer1).ratio() is 1.0:
+    if SequenceMatcher(None, answer, answer1).ratio() == 1.0:
         return True
     return False
 
 def islinkdisabletest(answer):
     answer1 = 'Link Disable/Enable test'
-    if SequenceMatcher(None, answer, answer1).ratio() is 1.0:
+    if SequenceMatcher(None, answer, answer1).ratio() == 1.0:
         return True
     return False
 
 def islinkequtest(answer):
     answer1 = 'Link Equ test'
-    if SequenceMatcher(None, answer, answer1).ratio() is 1.0:
+    if SequenceMatcher(None, answer, answer1).ratio() == 1.0:
         return True
     return False
 
 def islinkspeedtest(answer):
     answer1 = 'Link Speed test'
-    if SequenceMatcher(None, answer, answer1).ratio() is 1.0:
+    if SequenceMatcher(None, answer, answer1).ratio() == 1.0:
         return True
     return False
 
 def isalltest(answer):
     answer1 = 'All'
-    if SequenceMatcher(None, answer, answer1).ratio() is 1.0:
+    if SequenceMatcher(None, answer, answer1).ratio() == 1.0:
         return True
     return False
 
+def get_log_level(answer):
+    if answer == 'Debug':
+        return 10
+    elif answer == 'Info':
+        return 20
+    elif answer == 'Warnning':
+        return 30
+    elif answer == 'Error':
+        return 40
+    else:
+        return 10
+
+def check_test_parm(param):
+    print(param["busrp"])
+    print(param["devrp"])
+    print(param["funrp"])
+    print(param["pcipm_test"])
+    print(param["aspm_test"])
+    print(param["link_ret_test"])
+    print(param["link_disable_test"])
+    print(param["link_equ_test"])
+    print(param["link_speed_test"])
+    print(param["all_test"])
+    print(param["aer_chk"])
+
 if __name__ == "__main__":
     answers = prompt(questions)
+
+    #logging.basicConfig(filename=answers["debugfile"], level=get_log_level(answers['loglevel']), format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    #logging.basicConfig(filename="file.txt", level=get_log_level(answers['loglevel']), format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename="file.txt", level=10, format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
     logging.info("RP BUS:%s DEV:%s FUN :%s",
             answers['rpbus'], answers['rpdev'], answers['rpfun'])
     logging.info("EP BUS:%s DEV:%s FUN :%s",
@@ -207,4 +334,5 @@ if __name__ == "__main__":
             "max_aspm": 1,
      }
 
+    #check_test_parm(test_param_dict)
     main.main_test_fun(test_param_dict)

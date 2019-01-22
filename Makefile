@@ -12,7 +12,7 @@ local:
 	make -f Makefilelib
 	cd pyc && python3 setup.py build_ext --inplace && cd -
 
-cli:
+cli: local
 	cd pyc && python3 cli.py && cd -
 	#cd pyc && python3 common.py && cd -
 

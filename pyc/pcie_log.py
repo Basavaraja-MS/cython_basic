@@ -3,7 +3,7 @@ import logging
 
 # Uncomment below for terminal log message
 #Replace DEBUG with INFO, WARNING, ERROR
-logging.basicConfig(filename='testresult.log', level=logging.DEBUG, format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s')
+#logging.basicConfig(filename='testresult.log', level=logging.DEBUG, format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 class QTextEditLogger(logging.Handler):
     def __init__(self, parent):

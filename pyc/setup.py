@@ -7,6 +7,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Build import cythonize
 
+import os
 
 # For demo purposes, we build our own tiny library.
 """
@@ -25,8 +26,8 @@ ext_modules = cythonize([
               sources=["pcipy.pyx"],
               #include_dirs=[os.getcwd(), "$(SRC_PATH)/lib"],  # path to .h file(s)
               #library_dirs=[os.getcwd(), "$(SRC_PATH)/lib"],  # path to .a or .so file(s)
-              include_dirs=[os.getcwd(), "/home/labuser/basavam/pcipy/pciepy/lib"],  # path to .h file(s)
-              library_dirs=[os.getcwd(), "/home/labuser/basavam/pcipy/pciepy/lib"],  # path to .a or .so file(s)
+              include_dirs=[os.getcwd(), os.path.join(os.getcwd(), "../lib")],  # path to .h file(s)
+              library_dirs=[os.getcwd(), os.path.join(os.getcwd(), "../lib")],  # path to .a or .so file(s)
               libraries=['pci'])
 ], gdb_debug=True)
 
